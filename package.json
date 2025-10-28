@@ -1,0 +1,34 @@
+{
+  "name": "tax-2025-calculator",
+  "version": "1.0.0",
+  "description": "Tax Planning Calculator 2025 - Solar Investment & Charitable Donation Strategy",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "dev": "python -m http.server 3000"
+  },
+  "keywords": [
+    "tax",
+    "calculator",
+    "solar",
+    "investment",
+    "donation",
+    "2025",
+    "tax-planning"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/tax-2025-calculator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/tax-2025-calculator/issues"
+  },
+  "homepage": "https://github.com/yourusername/tax-2025-calculator#readme",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
