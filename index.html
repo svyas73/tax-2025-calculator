@@ -1,858 +1,902 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tax Planning Calculator 2025 - Solar & Donation Strategy</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
-            min-height: 100vh;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tax Planning Calculator 2025 - Solar & Donation Strategy</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 20px;
+                min-height: 100vh;
+            }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+            }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
+            .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 30px;
+                text-align: center;
+            }
 
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
+            .header h1 {
+                font-size: 2.5em;
+                margin-bottom: 10px;
+            }
 
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
-        }
+            .header p {
+                font-size: 1.1em;
+                opacity: 0.9;
+            }
 
-        .input-section, .results-section {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .section-title {
-            font-size: 1.5em;
-            color: #667eea;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 0.95em;
-        }
-
-        input[type="number"], select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        input[type="number"]:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .info-text {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: transform 0.2s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .result-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border-left: 4px solid #667eea;
-        }
-
-        .result-card h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .result-row:last-child {
-            border-bottom: none;
-        }
-
-        .result-label {
-            color: #555;
-            font-weight: 500;
-        }
-
-        .result-value {
-            font-weight: 700;
-            color: #333;
-        }
-
-        .result-value.positive {
-            color: #27ae60;
-        }
-
-        .result-value.negative {
-            color: #e74c3c;
-        }
-
-        .tax-breakdown {
-            background: #fff3cd;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-
-        .breakdown-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            font-size: 0.9em;
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .summary-card h3 {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
-
-        .summary-card .big-number {
-            font-size: 2.5em;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .comparison-card {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .comparison-card h4 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-        }
-
-        .comparison-card .amount {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: #333;
-        }
-
-        @media (max-width: 1024px) {
             .content {
-                grid-template-columns: 1fr;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+                padding: 30px;
             }
-        }
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: help;
-            color: #667eea;
-            font-weight: bold;
-            margin-left: 5px;
-        }
+            .input-section,
+            .results-section {
+                background: #f8f9fa;
+                padding: 25px;
+                border-radius: 15px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
 
-        .highlight {
-            background: #fff3cd;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>💰 Tax Planning Calculator 2025</h1>
-            <p>Solar Investment & Charitable Donation Strategy</p>
-        </div>
+            .section-title {
+                font-size: 1.5em;
+                color: #667eea;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 3px solid #667eea;
+            }
 
-        <div class="content">
-            <!-- Input Section -->
-            <div class="input-section">
-                <h2 class="section-title">📊 Input Parameters</h2>
-                
-                <div class="form-group">
-                    <label>Filing Status</label>
-                    <select id="filingStatus">
-                        <option value="married">Married Filing Jointly</option>
-                        <option value="single">Single</option>
-                        <option value="hoh">Head of Household</option>
-                    </select>
-                </div>
+            .form-group {
+                margin-bottom: 20px;
+            }
 
-                <div class="form-group">
-                    <label>Annual Gross Income</label>
-                    <input type="number" id="income" value="1000000" min="0" step="1000">
-                    <div class="info-text">Total annual income before any deductions</div>
-                </div>
+            label {
+                display: block;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 8px;
+                font-size: 0.95em;
+            }
 
-                <div class="form-group">
-                    <label>Solar Investment Amount</label>
-                    <input type="number" id="solarInvestment" value="200000" min="0" step="1000">
-                    <div class="info-text">Gets almost same amount as tax credit in first year</div>
-                </div>
+            input[type="number"],
+            select {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                font-size: 1em;
+                transition: border-color 0.3s;
+            }
 
-                <div class="form-group">
-                    <label>Solar Revenue Counted in Year</label>
-                    <select id="solarRevenueYear">
-                        <option value="1">Year 1</option>
-                        <option value="2">Year 2</option>
-                    </select>
-                    <div class="info-text">Year 1: Revenue (1.5x) netted with depreciation (2x). Year 2: Full depreciation (2x) in Year 1</div>
-                </div>
+            input[type="number"]:focus,
+            select:focus {
+                outline: none;
+                border-color: #667eea;
+            }
 
-                <div class="form-group">
-                    <label>Solar Annual Maintenance (%)</label>
-                    <input type="number" id="maintenanceRate" value="10" min="0" max="100" step="0.1">
-                    <div class="info-text">Annual maintenance as % of solar investment</div>
-                </div>
+            .info-text {
+                font-size: 0.85em;
+                color: #666;
+                margin-top: 5px;
+            }
 
-                <div class="form-group">
-                    <label>Max Donation Deduction (% of Reduced AGI)</label>
-                    <input type="number" id="donationPercent" value="60" min="0" max="60" step="0.1">
-                    <div class="info-text">Maximum 60% of Reduced AGI. Actual donation paid = 20% of this amount</div>
-                </div>
+            button {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 15px 30px;
+                font-size: 1.1em;
+                font-weight: 600;
+                border-radius: 8px;
+                cursor: pointer;
+                width: 100%;
+                margin-top: 10px;
+                transition: transform 0.2s;
+            }
 
-                <button onclick="calculateTax()">🧮 Calculate Taxes</button>
-            </div>
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+            }
 
-            <!-- Results Section -->
-            <div class="results-section" id="results">
-                <h2 class="section-title">📈 Tax Calculation Results</h2>
-                
-                <div class="result-card">
-                    <h3>☀️ Solar Costs</h3>
-                    <div class="result-row">
-                        <span class="result-label">Solar Investment</span>
-                        <span class="result-value negative" id="displaySolarInvestment">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label">Solar Maintenance</span>
-                        <span class="result-value negative" id="displayMaintenance">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label">Solar Depreciation (Federal)</span>
-                        <span class="result-value" id="displayFederalDepreciation">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label">Solar Depreciation (CA - Year 1 of 6 on Total Assets)</span>
-                        <span class="result-value" id="displayCADepreciation">$0</span>
-                    </div>
-                    <div class="result-row" id="year2RevenueRow" style="display: none;">
-                        <span class="result-label">Revenue in Year 2</span>
-                        <span class="result-value negative" id="displayYear2Revenue">$0</span>
-                    </div>
-                    <div class="result-row" id="year2TaxRow" style="display: none;">
-                        <span class="result-label">Possible Least Tax (20%)</span>
-                        <span class="result-value negative" id="displayYear2Tax">$0</span>
-                    </div>
-                </div>
+            .result-card {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                border-left: 4px solid #667eea;
+            }
 
-                <div class="result-card">
-                    <h3>💵 Income & Deductions</h3>
-                    <div class="result-row">
-                        <span class="result-label">Income</span>
-                        <span class="result-value" id="displayIncome">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label">Reduced AGI (after Federal depreciation)</span>
-                        <span class="result-value" id="displayAGI">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label">60% max donation deduction</span>
-                        <span class="result-value" id="displayStandardDeduction">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label">Donation paid to meet deduction (20%)</span>
-                        <span class="result-value negative" id="displayDonation">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label"><strong>Federal Final AGI</strong></span>
-                        <span class="result-value highlight" id="displayFederalFinalAGI">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label"><strong>CA Final AGI</strong></span>
-                        <span class="result-value highlight" id="displayCAFinalAGI">$0</span>
-                    </div>
-                </div>
+            .result-card h3 {
+                color: #667eea;
+                margin-bottom: 15px;
+                font-size: 1.2em;
+            }
 
-                <div class="result-card">
-                    <h3>💸 Tax Liability</h3>
-                    <div class="result-row">
-                        <span class="result-label" style="font-weight: 400;">Federal Tax on Final AGI</span>
-                        <span class="result-value negative" style="font-weight: 400;" id="displayFederalTax">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label" style="font-weight: 400;">Solar Tax Credit (Federal only)</span>
-                        <span class="result-value positive" style="font-weight: 400;" id="displayFederalSolarCredit">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label" style="font-weight: 600;">Federal Tax After Credit</span>
-                        <span class="result-value" style="font-weight: 600;" id="displayFederalTaxAfterCredit">$0</span>
-                    </div>
-                    <div class="result-row" id="carryForwardRow" style="display: none; background: #e3f2fd; padding: 10px; border-radius: 5px; margin-top: 5px;">
-                        <span class="result-label" style="color: #1976d2; font-weight: 600;">Federal Credit Carry Forward to Next Year</span>
-                        <span class="result-value positive" style="color: #1976d2; font-weight: 700;" id="displayCarryForward">$0</span>
-                    </div>
-                    <div class="result-row" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;">
-                        <span class="result-label" style="font-weight: 400;">CA Tax on Final AGI</span>
-                        <span class="result-value negative" style="font-weight: 400;" id="displayCATax">$0</span>
-                    </div>
-                    <div class="result-row" style="margin-top: 10px; padding-top: 10px; border-top: 2px solid #667eea;">
-                        <span class="result-label"><strong>Total Tax (Fed + CA after credit)</strong></span>
-                        <span class="result-value negative highlight" style="font-size: 1.3em; font-weight: 700;" id="displayTotalTax">$0</span>
-                    </div>
-                </div>
+            .result-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+            }
 
-                <div class="result-card">
-                    <h3>💰 Total Outflow</h3>
-                    <div class="result-row">
-                        <span class="result-label">Tax and outflow cost - total</span>
-                        <span class="result-value negative" id="displayTotalOutflow">$0</span>
-                    </div>
-                    <div class="info-text" style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px;">
-                        Formula: Donation + Solar Investment + Total Tax (Fed after credit + CA) + Solar Maintenance
-                    </div>
-                    <div class="result-row" style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #667eea;">
-                        <span class="result-label"><strong>Final Tax (Effective Tax)</strong></span>
-                        <span class="result-value negative highlight" id="displayEffectiveTax" style="font-size: 1.2em;">$0</span>
-                    </div>
-                    <div class="info-text" style="margin-top: 5px; padding: 10px; background: #e8f5e9; border-radius: 5px;">
-                        Same as Total Outflow (solar credit already applied to Federal tax)
-                    </div>
-                </div>
+            .result-row:last-child {
+                border-bottom: none;
+            }
 
-                <div class="summary-card">
-                    <h3>FINAL TAX IN FIRST YEAR</h3>
-                    <div class="big-number" id="displayFinalTax">$0</div>
-                    <div style="font-size: 0.9em; opacity: 0.9; margin-top: 10px;">
-                        Formula: Total Outflow - Solar Tax Credit
-                    </div>
-                </div>
+            .result-label {
+                color: #555;
+                font-weight: 500;
+            }
 
-                <div class="summary-card" id="year2MinTaxCard" style="display: none; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
-                    <h3>POSSIBLE MINIMUM TAX FOR YEAR 2</h3>
-                    <div class="big-number" id="displayYear2MinTax">$0</div>
-                    <div style="font-size: 0.9em; opacity: 0.9; margin-top: 10px;">
-                        20% tax on solar revenue (1.5x investment) counted in Year 2
-                    </div>
-                </div>
+            .result-value {
+                font-weight: 700;
+                color: #333;
+            }
 
-                <div class="comparison-grid">
-                    <div class="comparison-card">
-                        <h4>Total Outflow Before Credit</h4>
-                        <div class="amount negative" id="displayTotalOutflowDisplay">$0</div>
-                    </div>
-                    <div class="comparison-card">
-                        <h4>Effective Tax Rate</h4>
-                        <div class="amount" id="displayEffectiveRate">0%</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            .result-value.positive {
+                color: #27ae60;
+            }
 
-        <!-- Comparison Table Section -->
-        <div style="padding: 30px; background: #f8f9fa;">
-            <h2 class="section-title" style="color: #667eea; text-align: center; margin-bottom: 20px;">
-                📊 Solar Investment Comparison Table (50K - 500K)
-            </h2>
-            
-            <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
-                <button onclick="downloadPDF()" style="width: auto; padding: 12px 30px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 1.2em;">📄</span> Download PDF
-                </button>
-                <button onclick="downloadExcel()" style="width: auto; padding: 12px 30px; background: linear-gradient(135deg, #27ae60 0%, #229954 100%); display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 1.2em;">📊</span> Download Excel
-                </button>
-            </div>
-            
-            <div style="overflow-x: auto;">
-                <table id="comparisonTable" style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
-                    <thead>
-                        <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                            <th style="padding: 15px; text-align: left; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">Calculation Item</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">$50K</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">$100K</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">$150K</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">$200K</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">$250K</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">$300K</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">$350K</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">$400K</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">$450K</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600;">$500K</th>
-                        </tr>
-                    </thead>
-                    <tbody id="comparisonTableBody">
-                        <!-- Table rows will be populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+            .result-value.negative {
+                color: #e74c3c;
+            }
 
-    <script>
-        // 2025 Federal Tax Brackets (Married Filing Jointly)
-        const federalBrackets = {
-            married: [
-                { min: 0, max: 23200, rate: 0.10 },
-                { min: 23200, max: 94300, rate: 0.12 },
-                { min: 94300, max: 201050, rate: 0.22 },
-                { min: 201050, max: 383900, rate: 0.24 },
-                { min: 383900, max: 487450, rate: 0.32 },
-                { min: 487450, max: 731200, rate: 0.35 },
-                { min: 731200, max: Infinity, rate: 0.37 }
-            ],
-            single: [
-                { min: 0, max: 11600, rate: 0.10 },
-                { min: 11600, max: 47150, rate: 0.12 },
-                { min: 47150, max: 100525, rate: 0.22 },
-                { min: 100525, max: 191950, rate: 0.24 },
-                { min: 191950, max: 243725, rate: 0.32 },
-                { min: 243725, max: 609350, rate: 0.35 },
-                { min: 609350, max: Infinity, rate: 0.37 }
-            ],
-            hoh: [
-                { min: 0, max: 16550, rate: 0.10 },
-                { min: 16550, max: 63100, rate: 0.12 },
-                { min: 63100, max: 100500, rate: 0.22 },
-                { min: 100500, max: 191950, rate: 0.24 },
-                { min: 191950, max: 243700, rate: 0.32 },
-                { min: 243700, max: 609350, rate: 0.35 },
-                { min: 609350, max: Infinity, rate: 0.37 }
-            ]
-        };
+            .tax-breakdown {
+                background: #fff3cd;
+                padding: 15px;
+                border-radius: 8px;
+                margin: 10px 0;
+            }
 
-        // 2025 California Tax Brackets (uses own brackets)
-        const caBrackets = [
-            { min: 0, max: 20198, rate: 0.01 },
-            { min: 20198, max: 47884, rate: 0.02 },
-            { min: 47884, max: 75576, rate: 0.04 },
-            { min: 75576, max: 104910, rate: 0.06 },
-            { min: 104910, max: 132590, rate: 0.08 },
-            { min: 132590, max: 677278, rate: 0.093 },
-            { min: 677278, max: 812728, rate: 0.103 },
-            { min: 812728, max: 1000000, rate: 0.113 },
-            { min: 1000000, max: Infinity, rate: 0.123 }
-        ];
+            .breakdown-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 5px 0;
+                font-size: 0.9em;
+            }
 
-        // Standard Deductions 2025
-        const standardDeductions = {
-            married: 29200,
-            single: 14600,
-            hoh: 21900
-        };
+            .summary-card {
+                background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+                color: white;
+                padding: 25px;
+                border-radius: 10px;
+                margin-top: 20px;
+                text-align: center;
+            }
 
-        function calculateProgressiveTax(income, brackets) {
-            let tax = 0;
-            let breakdown = [];
-            
-            for (let i = 0; i < brackets.length; i++) {
-                const bracket = brackets[i];
-                if (income > bracket.min) {
-                    const taxableInBracket = Math.min(income, bracket.max) - bracket.min;
-                    const taxInBracket = taxableInBracket * bracket.rate;
-                    tax += taxInBracket;
-                    
-                    if (taxableInBracket > 0) {
-                        breakdown.push({
-                            range: `$${formatNumber(bracket.min)} - $${bracket.max === Infinity ? '∞' : formatNumber(bracket.max)}`,
-                            rate: (bracket.rate * 100).toFixed(1) + '%',
-                            taxableAmount: taxableInBracket,
-                            tax: taxInBracket
-                        });
-                    }
+            .summary-card h3 {
+                font-size: 1.1em;
+                margin-bottom: 10px;
+                opacity: 0.9;
+            }
+
+            .summary-card .big-number {
+                font-size: 2.5em;
+                font-weight: 700;
+                margin: 10px 0;
+            }
+
+            .comparison-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .comparison-card {
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .comparison-card h4 {
+                color: #667eea;
+                margin-bottom: 10px;
+                font-size: 0.9em;
+            }
+
+            .comparison-card .amount {
+                font-size: 1.5em;
+                font-weight: 700;
+                color: #333;
+            }
+
+            @media (max-width: 1024px) {
+                .content {
+                    grid-template-columns: 1fr;
                 }
-                
-                if (income <= bracket.max) break;
             }
-            
-            return { tax, breakdown };
-        }
 
-        function formatNumber(num) {
-            return num.toLocaleString('en-US', { maximumFractionDigits: 0 });
-        }
-
-        function formatCurrency(num) {
-            return '$' + formatNumber(Math.round(num));
-        }
-
-        function calculateTax() {
-            // Get inputs
-            const filingStatus = document.getElementById('filingStatus').value;
-            const income = parseFloat(document.getElementById('income').value) || 0;  // B2
-            const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;  // B3
-            const solarRevenueYear = document.getElementById('solarRevenueYear').value;
-            const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
-            const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
-
-            // B4: Solar Maintenance = B3 * 0.1
-            const solarMaintenance = solarInvestment * (maintenanceRate / 100);
-            
-            // B5: Solar Depreciation for Federal
-            // Year 1: (B3*2) - (B3*1.5) = B3 * 0.5 (revenue netted with depreciation)
-            // Year 2: B3 * 2 (full depreciation, revenue counted in year 2)
-            let federalDepreciation;
-            if (solarRevenueYear === "1") {
-                federalDepreciation = (solarInvestment * 2) - (solarInvestment * 1.5);  // 0.5x
-            } else {
-                federalDepreciation = solarInvestment * 2;  // 2x
+            .tooltip {
+                position: relative;
+                display: inline-block;
+                cursor: help;
+                color: #667eea;
+                font-weight: bold;
+                margin-left: 5px;
             }
-            
-            // CA Depreciation: Straight-line over 6 years on total assets (2.5x solar investment)
-            const totalAssets = solarInvestment * 2.5;
-            const caDepreciation = totalAssets / 6;
-            
-            // B6: Reduced AGI (after depreciation) - use Federal depreciation for donation calculation
-            const reducedAGI = income - federalDepreciation;
-            
-            // B7: 60% max donation deduction = B6 * 0.6 (user can adjust this percentage)
-            const maxDonationDeduction = reducedAGI * (donationPercent / 100);
-            
-            // B8: Donation paid to meet deduction (20%) = B7 * 0.2 (always 20% of max deduction)
-            const donation = maxDonationDeduction * 0.2;
-            
-            // B9: Final AGI for Federal = B2 - Federal Depreciation - B7
-            const federalFinalAGI = income - federalDepreciation - maxDonationDeduction;
-            
-            // CA Final AGI = B2 - CA Depreciation - B7 (CA uses its own depreciation)
-            const caFinalAGI = income - caDepreciation - maxDonationDeduction;
-            
-            // Calculate Federal Tax and CA Tax on respective Final AGIs
-            const federalResult = calculateProgressiveTax(federalFinalAGI, federalBrackets[filingStatus]);
-            const federalTax = federalResult.tax;
-            
-            const caResult = calculateProgressiveTax(caFinalAGI, caBrackets);
-            const caTax = caResult.tax;
-            
-            // Solar tax credit applies to Federal tax only (same as solar investment)
-            const solarTaxCredit = solarInvestment;
-            
-            // Calculate Federal tax after credit
-            let federalTaxAfterCredit = federalTax - solarTaxCredit;
-            let carryForward = 0;
-            
-            // If Federal tax becomes negative, it carries forward to next year
-            if (federalTaxAfterCredit < 0) {
-                carryForward = Math.abs(federalTaxAfterCredit);
-                federalTaxAfterCredit = 0;
+
+            .highlight {
+                background: #fff3cd;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-weight: 600;
             }
-            
-            // Total tax is Federal (after credit) + CA
-            const totalTax = federalTaxAfterCredit + caTax;
-            
-            // Total outflow = donation + solar investment + total tax (after credit) + maintenance
-            const totalOutflow = donation + solarInvestment + totalTax + solarMaintenance;
-            
-            // Final tax liability equals total outflow (credit already applied)
-            const finalTaxLiability = totalOutflow;
-            
-            const effectiveRate = (finalTaxLiability / income) * 100;
+        </style>
+    </head>
 
-            // Display results - Following Excel structure
-            document.getElementById('displayIncome').textContent = formatCurrency(income);
-            document.getElementById('displayFederalDepreciation').textContent = formatCurrency(federalDepreciation);
-            document.getElementById('displayCADepreciation').textContent = formatCurrency(caDepreciation);
-            
-            // Show Year 2 revenue info if Year 2 is selected
-            if (solarRevenueYear === "2") {
-                const year2Revenue = solarInvestment * 1.5;
-                const year2PossibleTax = year2Revenue * 0.20;
-                document.getElementById('year2RevenueRow').style.display = '';
-                document.getElementById('year2TaxRow').style.display = '';
-                document.getElementById('displayYear2Revenue').textContent = formatCurrency(year2Revenue);
-                document.getElementById('displayYear2Tax').textContent = formatCurrency(year2PossibleTax);
-                
-                // Show Year 2 minimum tax card
-                document.getElementById('year2MinTaxCard').style.display = 'block';
-                document.getElementById('displayYear2MinTax').textContent = formatCurrency(year2PossibleTax);
-            } else {
-                document.getElementById('year2RevenueRow').style.display = 'none';
-                document.getElementById('year2TaxRow').style.display = 'none';
-                document.getElementById('year2MinTaxCard').style.display = 'none';
-            }
-            
-            document.getElementById('displayAGI').textContent = formatCurrency(reducedAGI);
-            document.getElementById('displayStandardDeduction').textContent = formatCurrency(maxDonationDeduction);
-            document.getElementById('displayDonation').textContent = formatCurrency(donation);
-            document.getElementById('displayFederalFinalAGI').textContent = formatCurrency(federalFinalAGI);
-            document.getElementById('displayCAFinalAGI').textContent = formatCurrency(caFinalAGI);
-            
-            // Display tax totals
-            document.getElementById('displayFederalTax').textContent = formatCurrency(federalTax);
-            document.getElementById('displayFederalSolarCredit').textContent = formatCurrency(solarTaxCredit);
-            document.getElementById('displayFederalTaxAfterCredit').textContent = formatCurrency(federalTaxAfterCredit);
-            
-            // Show carryforward if applicable
-            if (carryForward > 0) {
-                document.getElementById('carryForwardRow').style.display = '';
-                document.getElementById('displayCarryForward').textContent = formatCurrency(carryForward);
-            } else {
-                document.getElementById('carryForwardRow').style.display = 'none';
-            }
-            
-            document.getElementById('displayCATax').textContent = formatCurrency(caTax);
-            document.getElementById('displayTotalTax').textContent = formatCurrency(totalTax);
-            
-            // Solar benefits
-            document.getElementById('displaySolarInvestment').textContent = formatCurrency(solarInvestment);
-            document.getElementById('displayMaintenance').textContent = formatCurrency(solarMaintenance);
-            
-            // Final calculations
-            document.getElementById('displayFinalTax').textContent = formatCurrency(finalTaxLiability);
-            document.getElementById('displayTotalOutflow').textContent = formatCurrency(totalOutflow);
-            document.getElementById('displayTotalOutflowDisplay').textContent = formatCurrency(totalOutflow);
-            document.getElementById('displayEffectiveTax').textContent = formatCurrency(finalTaxLiability);
-            document.getElementById('displayEffectiveRate').textContent = effectiveRate.toFixed(2) + '%';
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>💰 Tax Planning Calculator 2025</h1>
+                <p>Solar Investment & Charitable Donation Strategy</p>
+            </div>
 
-            // Update comparison table
-            updateComparisonTable();
-        }
+            <div class="content">
+                <!-- Input Section -->
+                <div class="input-section">
+                    <h2 class="section-title">📊 Input Parameters</h2>
 
-        function updateComparisonTable() {
-            const filingStatus = document.getElementById('filingStatus').value;
-            const income = parseFloat(document.getElementById('income').value) || 0;
-            const solarRevenueYear = document.getElementById('solarRevenueYear').value;
-            const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
-            const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+                    <div class="form-group">
+                        <label>Filing Status</label>
+                        <select id="filingStatus">
+                            <option value="married">Married Filing Jointly</option>
+                            <option value="single">Single</option>
+                            <option value="hoh">Head of Household</option>
+                        </select>
+                    </div>
 
-            const solarInvestments = [50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000, 500000];
-            
-            const rows = [
-                { label: 'Gross Income', key: 'income', highlight: false, isPercentage: false, textColor: 'default' },
-                { label: 'Solar Investment', key: 'solarInvestment', highlight: false, isPercentage: false, textColor: 'red' },
-                { label: 'Solar Maintenance', key: 'solarMaintenance', highlight: false, isPercentage: false, textColor: 'red' },
-                { label: 'Solar Depreciation (Federal)', key: 'federalDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
-                { label: 'Solar Depreciation (CA - Yr 1 of 6 on Total Assets)', key: 'caDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
-                { label: 'Revenue in Year 2', key: 'year2Revenue', highlight: false, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                { label: 'Possible Least Tax (20%)', key: 'year2Tax', highlight: false, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                { label: 'Reduced AGI', key: 'reducedAGI', highlight: false, isPercentage: false, textColor: 'default' },
-                { label: `${donationPercent}% Max Donation Deduction`, key: 'maxDonationDeduction', highlight: false, isPercentage: false, textColor: 'default' },
-                { label: 'Donation Paid (20%)', key: 'donation', highlight: false, isPercentage: false, textColor: 'red' },
-                { label: 'Federal Final AGI', key: 'federalFinalAGI', highlight: false, isPercentage: false, textColor: 'default' },
-                { label: 'CA Final AGI', key: 'caFinalAGI', highlight: false, isPercentage: false, textColor: 'default' },
-                { label: 'Federal Tax', key: 'federalTax', highlight: false, isPercentage: false, textColor: 'red' },
-                { label: 'Solar Tax Credit (Federal)', key: 'solarTaxCredit', highlight: false, isPercentage: false, textColor: 'green' },
-                { label: 'Federal Tax After Credit', key: 'federalTaxAfterCredit', highlight: false, isPercentage: false, textColor: 'red' },
-                { label: 'Federal Credit Carry Forward', key: 'carryForward', highlight: false, isPercentage: false, textColor: 'green' },
-                { label: 'CA Tax', key: 'caTax', highlight: false, isPercentage: false, textColor: 'red' },
-                { label: 'Total Tax (Fed + CA after credit)', key: 'totalTax', highlight: true, isPercentage: false, textColor: 'red' },
-                { label: 'Total Outflow', key: 'totalOutflow', highlight: true, isPercentage: false, textColor: 'default' },
-                { label: 'Final Tax (Effective)', key: 'finalTaxLiability', highlight: true, isPercentage: false, textColor: 'default' },
-                { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
-                { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true }
+                    <div class="form-group">
+                        <label>Annual Gross Income</label>
+                        <input type="number" id="income" value="1000000" min="0" step="1000">
+                        <div class="info-text">Total annual income before any deductions</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Solar Investment Amount</label>
+                        <input type="number" id="solarInvestment" value="200000" min="0" step="1000">
+                        <div class="info-text">Gets almost same amount as tax credit in first year</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Solar Revenue Counted in Year</label>
+                        <select id="solarRevenueYear">
+                            <option value="1">Year 1</option>
+                            <option value="2">Year 2</option>
+                        </select>
+                        <div class="info-text">Year 1: Revenue (1.5x) netted with depreciation (2x). Year 2: Full
+                            depreciation (2x) in Year 1</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Solar Annual Maintenance (%)</label>
+                        <input type="number" id="maintenanceRate" value="10" min="0" max="100" step="0.1">
+                        <div class="info-text">Annual maintenance as % of solar investment</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Max Donation Deduction (% of Reduced AGI)</label>
+                        <input type="number" id="donationPercent" value="60" min="0" max="60" step="0.1">
+                        <div class="info-text">Maximum 60% of Reduced AGI. Actual donation paid = 20% of this amount
+                        </div>
+                    </div>
+
+                    <button onclick="calculateTax()">🧮 Calculate Taxes</button>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section" id="results">
+                    <h2 class="section-title">📈 Tax Calculation Results</h2>
+
+                    <div class="result-card">
+                        <h3>☀️ Solar Costs</h3>
+                        <div class="result-row">
+                            <span class="result-label">Solar Investment</span>
+                            <span class="result-value negative" id="displaySolarInvestment">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Solar Maintenance</span>
+                            <span class="result-value negative" id="displayMaintenance">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Solar Depreciation (Federal)</span>
+                            <span class="result-value" id="displayFederalDepreciation">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Solar Depreciation (CA - Year 1 of 6 on Total Assets)</span>
+                            <span class="result-value" id="displayCADepreciation">$0</span>
+                        </div>
+                        <div class="result-row" id="year2RevenueRow" style="display: none;">
+                            <span class="result-label">Revenue in Year 2</span>
+                            <span class="result-value negative" id="displayYear2Revenue">$0</span>
+                        </div>
+                        <div class="result-row" id="year2TaxRow" style="display: none;">
+                            <span class="result-label">Possible Least Tax (20%)</span>
+                            <span class="result-value negative" id="displayYear2Tax">$0</span>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>💵 Income & Deductions</h3>
+                        <div class="result-row">
+                            <span class="result-label">Income</span>
+                            <span class="result-value" id="displayIncome">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Reduced AGI (after Federal depreciation)</span>
+                            <span class="result-value" id="displayAGI">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">60% max donation deduction</span>
+                            <span class="result-value" id="displayStandardDeduction">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Donation paid to meet deduction (20%)</span>
+                            <span class="result-value negative" id="displayDonation">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label"><strong>Federal Final AGI</strong></span>
+                            <span class="result-value highlight" id="displayFederalFinalAGI">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label"><strong>CA Final AGI</strong></span>
+                            <span class="result-value highlight" id="displayCAFinalAGI">$0</span>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>💸 Tax Liability</h3>
+                        <div class="result-row">
+                            <span class="result-label" style="font-weight: 400;">Federal Tax on Final AGI</span>
+                            <span class="result-value negative" style="font-weight: 400;"
+                                id="displayFederalTax">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label" style="font-weight: 400;">Solar Tax Credit (Federal only)</span>
+                            <span class="result-value positive" style="font-weight: 400;"
+                                id="displayFederalSolarCredit">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label" style="font-weight: 600;">Federal Tax After Credit</span>
+                            <span class="result-value" style="font-weight: 600;"
+                                id="displayFederalTaxAfterCredit">$0</span>
+                        </div>
+                        <div class="result-row" id="carryForwardRow"
+                            style="display: none; background: #e3f2fd; padding: 10px; border-radius: 5px; margin-top: 5px;">
+                            <span class="result-label" style="color: #1976d2; font-weight: 600;">Federal Credit Carry
+                                Forward to Next Year</span>
+                            <span class="result-value positive" style="color: #1976d2; font-weight: 700;"
+                                id="displayCarryForward">$0</span>
+                        </div>
+                        <div class="result-row"
+                            style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;">
+                            <span class="result-label" style="font-weight: 400;">CA Tax on Final AGI</span>
+                            <span class="result-value negative" style="font-weight: 400;" id="displayCATax">$0</span>
+                        </div>
+                        <div class="result-row"
+                            style="margin-top: 10px; padding-top: 10px; border-top: 2px solid #667eea;">
+                            <span class="result-label"><strong>Total Tax (Fed + CA after credit)</strong></span>
+                            <span class="result-value negative highlight" style="font-size: 1.3em; font-weight: 700;"
+                                id="displayTotalTax">$0</span>
+                        </div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>💰 Total Outflow</h3>
+                        <div class="result-row">
+                            <span class="result-label">Tax and outflow cost - total</span>
+                            <span class="result-value negative" id="displayTotalOutflow">$0</span>
+                        </div>
+                        <div class="info-text"
+                            style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px;">
+                            Formula: Donation + Solar Investment + Total Tax (Fed after credit + CA) + Solar Maintenance
+                        </div>
+                        <div class="result-row"
+                            style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #667eea;">
+                            <span class="result-label"><strong>Final Tax (Effective Tax)</strong></span>
+                            <span class="result-value negative highlight" id="displayEffectiveTax"
+                                style="font-size: 1.2em;">$0</span>
+                        </div>
+                        <div class="info-text"
+                            style="margin-top: 5px; padding: 10px; background: #e8f5e9; border-radius: 5px;">
+                            Same as Total Outflow (solar credit already applied to Federal tax)
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <h3>FINAL TAX IN FIRST YEAR</h3>
+                        <div class="big-number" id="displayFinalTax">$0</div>
+                        <div style="font-size: 0.9em; opacity: 0.9; margin-top: 10px;">
+                            Formula: Total Outflow - Solar Tax Credit
+                        </div>
+                    </div>
+
+                    <div class="summary-card" id="year2MinTaxCard"
+                        style="display: none; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                        <h3>POSSIBLE MINIMUM TAX FOR YEAR 2</h3>
+                        <div class="big-number" id="displayYear2MinTax">$0</div>
+                        <div style="font-size: 0.9em; opacity: 0.9; margin-top: 10px;">
+                            20% tax on solar revenue (1.5x investment) counted in Year 2
+                        </div>
+                    </div>
+
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>Total Outflow Before Credit</h4>
+                            <div class="amount negative" id="displayTotalOutflowDisplay">$0</div>
+                        </div>
+                        <div class="comparison-card">
+                            <h4>Effective Tax Rate</h4>
+                            <div class="amount" id="displayEffectiveRate">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Table Section -->
+            <div style="padding: 30px; background: #f8f9fa;">
+                <h2 class="section-title" style="color: #667eea; text-align: center; margin-bottom: 20px;">
+                    📊 Solar Investment Comparison Table (50K - 500K)
+                </h2>
+
+                <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
+                    <button onclick="downloadPDF()"
+                        style="width: auto; padding: 12px 30px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">📄</span> Download PDF
+                    </button>
+                    <button onclick="downloadExcel()"
+                        style="width: auto; padding: 12px 30px; background: linear-gradient(135deg, #27ae60 0%, #229954 100%); display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">📊</span> Download Excel
+                    </button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table id="comparisonTable"
+                        style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    Calculation Item</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    $50K</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    $100K</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    $150K</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    $200K</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    $250K</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    $300K</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    $350K</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    $400K</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                    $450K</th>
+                                <th style="padding: 15px; text-align: center; font-weight: 600;">$500K</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                            <!-- Table rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 2025 Federal Tax Brackets (Married Filing Jointly)
+            const federalBrackets = {
+                married: [
+                    { min: 0, max: 23200, rate: 0.10 },
+                    { min: 23200, max: 94300, rate: 0.12 },
+                    { min: 94300, max: 201050, rate: 0.22 },
+                    { min: 201050, max: 383900, rate: 0.24 },
+                    { min: 383900, max: 487450, rate: 0.32 },
+                    { min: 487450, max: 731200, rate: 0.35 },
+                    { min: 731200, max: Infinity, rate: 0.37 }
+                ],
+                single: [
+                    { min: 0, max: 11600, rate: 0.10 },
+                    { min: 11600, max: 47150, rate: 0.12 },
+                    { min: 47150, max: 100525, rate: 0.22 },
+                    { min: 100525, max: 191950, rate: 0.24 },
+                    { min: 191950, max: 243725, rate: 0.32 },
+                    { min: 243725, max: 609350, rate: 0.35 },
+                    { min: 609350, max: Infinity, rate: 0.37 }
+                ],
+                hoh: [
+                    { min: 0, max: 16550, rate: 0.10 },
+                    { min: 16550, max: 63100, rate: 0.12 },
+                    { min: 63100, max: 100500, rate: 0.22 },
+                    { min: 100500, max: 191950, rate: 0.24 },
+                    { min: 191950, max: 243700, rate: 0.32 },
+                    { min: 243700, max: 609350, rate: 0.35 },
+                    { min: 609350, max: Infinity, rate: 0.37 }
+                ]
+            };
+
+            // 2025 California Tax Brackets (uses own brackets)
+            const caBrackets = [
+                { min: 0, max: 20198, rate: 0.01 },
+                { min: 20198, max: 47884, rate: 0.02 },
+                { min: 47884, max: 75576, rate: 0.04 },
+                { min: 75576, max: 104910, rate: 0.06 },
+                { min: 104910, max: 132590, rate: 0.08 },
+                { min: 132590, max: 677278, rate: 0.093 },
+                { min: 677278, max: 812728, rate: 0.103 },
+                { min: 812728, max: 1000000, rate: 0.113 },
+                { min: 1000000, max: Infinity, rate: 0.123 }
             ];
 
-            const tableData = solarInvestments.map(solarInv => {
-                const solarMaintenance = solarInv * (maintenanceRate / 100);
-                
-                // Calculate Federal depreciation based on revenue year selection
+            // Standard Deductions 2025
+            const standardDeductions = {
+                married: 29200,
+                single: 14600,
+                hoh: 21900
+            };
+
+            function calculateProgressiveTax(income, brackets) {
+                let tax = 0;
+                let breakdown = [];
+
+                for (let i = 0; i < brackets.length; i++) {
+                    const bracket = brackets[i];
+                    if (income > bracket.min) {
+                        const taxableInBracket = Math.min(income, bracket.max) - bracket.min;
+                        const taxInBracket = taxableInBracket * bracket.rate;
+                        tax += taxInBracket;
+
+                        if (taxableInBracket > 0) {
+                            breakdown.push({
+                                range: `$${formatNumber(bracket.min)} - $${bracket.max === Infinity ? '∞' : formatNumber(bracket.max)}`,
+                                rate: (bracket.rate * 100).toFixed(1) + '%',
+                                taxableAmount: taxableInBracket,
+                                tax: taxInBracket
+                            });
+                        }
+                    }
+
+                    if (income <= bracket.max) break;
+                }
+
+                return { tax, breakdown };
+            }
+
+            function formatNumber(num) {
+                return num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+            }
+
+            function formatCurrency(num) {
+                return '$' + formatNumber(Math.round(num));
+            }
+
+            function calculateTax() {
+                // Get inputs
+                const filingStatus = document.getElementById('filingStatus').value;
+                const income = parseFloat(document.getElementById('income').value) || 0;  // B2
+                const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;  // B3
+                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+                const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
+                const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+
+                // B4: Solar Maintenance = B3 * 0.1
+                const solarMaintenance = solarInvestment * (maintenanceRate / 100);
+
+                // B5: Solar Depreciation for Federal
+                // Year 1: (B3*2) - (B3*1.5) = B3 * 0.5 (revenue netted with depreciation)
+                // Year 2: B3 * 2 (full depreciation, revenue counted in year 2)
                 let federalDepreciation;
                 if (solarRevenueYear === "1") {
-                    federalDepreciation = (solarInv * 2) - (solarInv * 1.5);  // 0.5x
+                    federalDepreciation = (solarInvestment * 2) - (solarInvestment * 1.5);  // 0.5x
                 } else {
-                    federalDepreciation = solarInv * 2;  // 2x
+                    federalDepreciation = solarInvestment * 2;  // 2x
                 }
-                
+
                 // CA Depreciation: Straight-line over 6 years on total assets (2.5x solar investment)
-                const totalAssets = solarInv * 2.5;
+                const totalAssets = solarInvestment * 2.5;
                 const caDepreciation = totalAssets / 6;
-                
+
+                // B6: Reduced AGI (after depreciation) - use Federal depreciation for donation calculation
                 const reducedAGI = income - federalDepreciation;
+
+                // B7: 60% max donation deduction = B6 * 0.6 (user can adjust this percentage)
                 const maxDonationDeduction = reducedAGI * (donationPercent / 100);
+
+                // B8: Donation paid to meet deduction (20%) = B7 * 0.2 (always 20% of max deduction)
                 const donation = maxDonationDeduction * 0.2;
-                
-                // Separate Final AGI for Federal and CA
+
+                // B9: Final AGI for Federal = B2 - Federal Depreciation - B7
                 const federalFinalAGI = income - federalDepreciation - maxDonationDeduction;
+
+                // CA Final AGI = B2 - CA Depreciation - B7 (CA uses its own depreciation)
                 const caFinalAGI = income - caDepreciation - maxDonationDeduction;
-                
+
+                // Calculate Federal Tax and CA Tax on respective Final AGIs
                 const federalResult = calculateProgressiveTax(federalFinalAGI, federalBrackets[filingStatus]);
                 const federalTax = federalResult.tax;
+
                 const caResult = calculateProgressiveTax(caFinalAGI, caBrackets);
                 const caTax = caResult.tax;
-                
-                // Solar tax credit applies to Federal only
-                const solarTaxCredit = solarInv;
-                
+
+                // Solar tax credit applies to Federal tax only (same as solar investment)
+                const solarTaxCredit = solarInvestment;
+
                 // Calculate Federal tax after credit
                 let federalTaxAfterCredit = federalTax - solarTaxCredit;
                 let carryForward = 0;
-                
-                // If Federal tax becomes negative, it carries forward
+
+                // If Federal tax becomes negative, it carries forward to next year
                 if (federalTaxAfterCredit < 0) {
                     carryForward = Math.abs(federalTaxAfterCredit);
                     federalTaxAfterCredit = 0;
                 }
-                
+
                 // Total tax is Federal (after credit) + CA
                 const totalTax = federalTaxAfterCredit + caTax;
-                const totalOutflow = donation + solarInv + totalTax + solarMaintenance;
+
+                // Total outflow = donation + solar investment + total tax (after credit) + maintenance
+                const totalOutflow = donation + solarInvestment + totalTax + solarMaintenance;
+
+                // Final tax liability equals total outflow (credit already applied)
                 const finalTaxLiability = totalOutflow;
+
                 const effectiveRate = (finalTaxLiability / income) * 100;
-                
-                // Year 2 revenue calculations
-                const year2Revenue = solarInv * 1.5;
-                const year2Tax = year2Revenue * 0.20;
-                const totalTaxBothYears = finalTaxLiability + year2Tax;
 
-                return {
-                    income: income,
-                    solarInvestment: solarInv,
-                    solarMaintenance: solarMaintenance,
-                    federalDepreciation: federalDepreciation,
-                    caDepreciation: caDepreciation,
-                    year2Revenue: year2Revenue,
-                    year2Tax: year2Tax,
-                    reducedAGI: reducedAGI,
-                    maxDonationDeduction: maxDonationDeduction,
-                    donation: donation,
-                    federalFinalAGI: federalFinalAGI,
-                    caFinalAGI: caFinalAGI,
-                    federalTax: federalTax,
-                    solarTaxCredit: solarTaxCredit,
-                    federalTaxAfterCredit: federalTaxAfterCredit,
-                    carryForward: carryForward,
-                    caTax: caTax,
-                    totalTax: totalTax,
-                    totalOutflow: totalOutflow,
-                    finalTaxLiability: finalTaxLiability,
-                    totalTaxBothYears: totalTaxBothYears,
-                    effectiveRate: effectiveRate
-                };
-            });
+                // Display results - Following Excel structure
+                document.getElementById('displayIncome').textContent = formatCurrency(income);
+                document.getElementById('displayFederalDepreciation').textContent = formatCurrency(federalDepreciation);
+                document.getElementById('displayCADepreciation').textContent = formatCurrency(caDepreciation);
 
-            let tableHTML = '';
-            rows.forEach(row => {
-                // Skip Year 2 rows if Year 1 is selected
-                if (row.showOnlyYear2 && solarRevenueYear === "1") {
-                    return;
+                // Show Year 2 revenue info if Year 2 is selected
+                if (solarRevenueYear === "2") {
+                    const year2Revenue = solarInvestment * 1.5;
+                    const year2PossibleTax = year2Revenue * 0.20;
+                    document.getElementById('year2RevenueRow').style.display = '';
+                    document.getElementById('year2TaxRow').style.display = '';
+                    document.getElementById('displayYear2Revenue').textContent = formatCurrency(year2Revenue);
+                    document.getElementById('displayYear2Tax').textContent = formatCurrency(year2PossibleTax);
+
+                    // Show Year 2 minimum tax card
+                    document.getElementById('year2MinTaxCard').style.display = 'block';
+                    document.getElementById('displayYear2MinTax').textContent = formatCurrency(year2PossibleTax);
+                } else {
+                    document.getElementById('year2RevenueRow').style.display = 'none';
+                    document.getElementById('year2TaxRow').style.display = 'none';
+                    document.getElementById('year2MinTaxCard').style.display = 'none';
                 }
-                
-                // Determine background color (only yellow for highlights, otherwise white)
-                const bgColor = row.highlight ? '#fff3cd' : 'white';
-                
-                // Determine text color
-                let textColor = '#333'; // default black
-                if (row.textColor === 'red') {
-                    textColor = '#c62828';
-                } else if (row.textColor === 'green') {
-                    textColor = '#2e7d32';
+
+                document.getElementById('displayAGI').textContent = formatCurrency(reducedAGI);
+                document.getElementById('displayStandardDeduction').textContent = formatCurrency(maxDonationDeduction);
+                document.getElementById('displayDonation').textContent = formatCurrency(donation);
+                document.getElementById('displayFederalFinalAGI').textContent = formatCurrency(federalFinalAGI);
+                document.getElementById('displayCAFinalAGI').textContent = formatCurrency(caFinalAGI);
+
+                // Display tax totals
+                document.getElementById('displayFederalTax').textContent = formatCurrency(federalTax);
+                document.getElementById('displayFederalSolarCredit').textContent = formatCurrency(solarTaxCredit);
+                document.getElementById('displayFederalTaxAfterCredit').textContent = formatCurrency(federalTaxAfterCredit);
+
+                // Show carryforward if applicable
+                if (carryForward > 0) {
+                    document.getElementById('carryForwardRow').style.display = '';
+                    document.getElementById('displayCarryForward').textContent = formatCurrency(carryForward);
+                } else {
+                    document.getElementById('carryForwardRow').style.display = 'none';
                 }
-                
-                const fontWeight = row.highlight ? '700' : '400';
-                
-                tableHTML += `<tr style="border-bottom: 1px solid #eee;">`;
-                tableHTML += `<td style="padding: 12px; background: ${bgColor}; font-weight: ${fontWeight}; color: ${textColor}; border-right: 1px solid #eee;">${row.label}</td>`;
-                
-                tableData.forEach(data => {
-                    const value = data[row.key];
-                    const displayValue = row.isPercentage ? value.toFixed(2) + '%' : formatCurrency(value);
-                    tableHTML += `<td style="padding: 12px; text-align: center; background: ${bgColor}; font-weight: ${fontWeight}; color: ${textColor}; border-right: 1px solid #eee;">${displayValue}</td>`;
+
+                document.getElementById('displayCATax').textContent = formatCurrency(caTax);
+                document.getElementById('displayTotalTax').textContent = formatCurrency(totalTax);
+
+                // Solar benefits
+                document.getElementById('displaySolarInvestment').textContent = formatCurrency(solarInvestment);
+                document.getElementById('displayMaintenance').textContent = formatCurrency(solarMaintenance);
+
+                // Final calculations
+                document.getElementById('displayFinalTax').textContent = formatCurrency(finalTaxLiability);
+                document.getElementById('displayTotalOutflow').textContent = formatCurrency(totalOutflow);
+                document.getElementById('displayTotalOutflowDisplay').textContent = formatCurrency(totalOutflow);
+                document.getElementById('displayEffectiveTax').textContent = formatCurrency(finalTaxLiability);
+                document.getElementById('displayEffectiveRate').textContent = effectiveRate.toFixed(2) + '%';
+
+                // Update comparison table
+                updateComparisonTable();
+            }
+
+            function updateComparisonTable() {
+                const filingStatus = document.getElementById('filingStatus').value;
+                const income = parseFloat(document.getElementById('income').value) || 0;
+                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+                const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
+                const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+
+                const solarInvestments = [50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000, 500000];
+
+                const rows = [
+                    { label: 'Gross Income', key: 'income', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: 'Solar Investment', key: 'solarInvestment', highlight: false, isPercentage: false, textColor: 'red' },
+                    { label: 'Solar Maintenance', key: 'solarMaintenance', highlight: false, isPercentage: false, textColor: 'red' },
+                    { label: 'Solar Depreciation (Federal)', key: 'federalDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: 'Solar Depreciation (CA - Yr 1 of 6 on Total Assets)', key: 'caDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: 'Revenue in Year 2', key: 'year2Revenue', highlight: false, isPercentage: false, textColor: 'red', showOnlyYear2: true },
+                    { label: 'Possible Least Tax (20%)', key: 'year2Tax', highlight: false, isPercentage: false, textColor: 'red', showOnlyYear2: true },
+                    { label: 'Reduced AGI', key: 'reducedAGI', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: `${donationPercent}% Max Donation Deduction`, key: 'maxDonationDeduction', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: 'Donation Paid (20%)', key: 'donation', highlight: false, isPercentage: false, textColor: 'red' },
+                    { label: 'Federal Final AGI', key: 'federalFinalAGI', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: 'CA Final AGI', key: 'caFinalAGI', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: 'Federal Tax', key: 'federalTax', highlight: false, isPercentage: false, textColor: 'red' },
+                    { label: 'Solar Tax Credit (Federal)', key: 'solarTaxCredit', highlight: false, isPercentage: false, textColor: 'green' },
+                    { label: 'Federal Tax After Credit', key: 'federalTaxAfterCredit', highlight: false, isPercentage: false, textColor: 'red' },
+                    { label: 'Federal Credit Carry Forward', key: 'carryForward', highlight: false, isPercentage: false, textColor: 'green' },
+                    { label: 'CA Tax', key: 'caTax', highlight: false, isPercentage: false, textColor: 'red' },
+                    { label: 'Total Tax (Fed + CA after credit)', key: 'totalTax', highlight: true, isPercentage: false, textColor: 'red' },
+                    { label: 'Total Outflow', key: 'totalOutflow', highlight: true, isPercentage: false, textColor: 'default' },
+                    { label: 'Final Tax (Effective)', key: 'finalTaxLiability', highlight: true, isPercentage: false, textColor: 'default' },
+                    { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
+                    { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true }
+                ];
+
+                const tableData = solarInvestments.map(solarInv => {
+                    const solarMaintenance = solarInv * (maintenanceRate / 100);
+
+                    // Calculate Federal depreciation based on revenue year selection
+                    let federalDepreciation;
+                    if (solarRevenueYear === "1") {
+                        federalDepreciation = (solarInv * 2) - (solarInv * 1.5);  // 0.5x
+                    } else {
+                        federalDepreciation = solarInv * 2;  // 2x
+                    }
+
+                    // CA Depreciation: Straight-line over 6 years on total assets (2.5x solar investment)
+                    const totalAssets = solarInv * 2.5;
+                    const caDepreciation = totalAssets / 6;
+
+                    const reducedAGI = income - federalDepreciation;
+                    const maxDonationDeduction = reducedAGI * (donationPercent / 100);
+                    const donation = maxDonationDeduction * 0.2;
+
+                    // Separate Final AGI for Federal and CA
+                    const federalFinalAGI = income - federalDepreciation - maxDonationDeduction;
+                    const caFinalAGI = income - caDepreciation - maxDonationDeduction;
+
+                    const federalResult = calculateProgressiveTax(federalFinalAGI, federalBrackets[filingStatus]);
+                    const federalTax = federalResult.tax;
+                    const caResult = calculateProgressiveTax(caFinalAGI, caBrackets);
+                    const caTax = caResult.tax;
+
+                    // Solar tax credit applies to Federal only
+                    const solarTaxCredit = solarInv;
+
+                    // Calculate Federal tax after credit
+                    let federalTaxAfterCredit = federalTax - solarTaxCredit;
+                    let carryForward = 0;
+
+                    // If Federal tax becomes negative, it carries forward
+                    if (federalTaxAfterCredit < 0) {
+                        carryForward = Math.abs(federalTaxAfterCredit);
+                        federalTaxAfterCredit = 0;
+                    }
+
+                    // Total tax is Federal (after credit) + CA
+                    const totalTax = federalTaxAfterCredit + caTax;
+                    const totalOutflow = donation + solarInv + totalTax + solarMaintenance;
+                    const finalTaxLiability = totalOutflow;
+                    const effectiveRate = (finalTaxLiability / income) * 100;
+
+                    // Year 2 revenue calculations
+                    const year2Revenue = solarInv * 1.5;
+                    const year2Tax = year2Revenue * 0.20;
+                    const totalTaxBothYears = finalTaxLiability + year2Tax;
+
+                    return {
+                        income: income,
+                        solarInvestment: solarInv,
+                        solarMaintenance: solarMaintenance,
+                        federalDepreciation: federalDepreciation,
+                        caDepreciation: caDepreciation,
+                        year2Revenue: year2Revenue,
+                        year2Tax: year2Tax,
+                        reducedAGI: reducedAGI,
+                        maxDonationDeduction: maxDonationDeduction,
+                        donation: donation,
+                        federalFinalAGI: federalFinalAGI,
+                        caFinalAGI: caFinalAGI,
+                        federalTax: federalTax,
+                        solarTaxCredit: solarTaxCredit,
+                        federalTaxAfterCredit: federalTaxAfterCredit,
+                        carryForward: carryForward,
+                        caTax: caTax,
+                        totalTax: totalTax,
+                        totalOutflow: totalOutflow,
+                        finalTaxLiability: finalTaxLiability,
+                        totalTaxBothYears: totalTaxBothYears,
+                        effectiveRate: effectiveRate
+                    };
                 });
-                
-                tableHTML += `</tr>`;
-            });
 
-            document.getElementById('comparisonTableBody').innerHTML = tableHTML;
-        }
+                let tableHTML = '';
+                rows.forEach(row => {
+                    // Skip Year 2 rows if Year 1 is selected
+                    if (row.showOnlyYear2 && solarRevenueYear === "1") {
+                        return;
+                    }
 
-        // Download PDF function
-        function downloadPDF() {
-            const income = parseFloat(document.getElementById('income').value) || 0;
-            const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;
-            const solarRevenueYear = document.getElementById('solarRevenueYear').value;
-            const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
-            const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
-            const filingStatus = document.getElementById('filingStatus').value;
-            
-            const printWindow = window.open('', '', 'height=800,width=1200');
-            printWindow.document.write(`
+                    // Determine background color (only yellow for highlights, otherwise white)
+                    const bgColor = row.highlight ? '#fff3cd' : 'white';
+
+                    // Determine text color
+                    let textColor = '#333'; // default black
+                    if (row.textColor === 'red') {
+                        textColor = '#c62828';
+                    } else if (row.textColor === 'green') {
+                        textColor = '#2e7d32';
+                    }
+
+                    const fontWeight = row.highlight ? '700' : '400';
+
+                    tableHTML += `<tr style="border-bottom: 1px solid #eee;">`;
+                    tableHTML += `<td style="padding: 12px; background: ${bgColor}; font-weight: ${fontWeight}; color: ${textColor}; border-right: 1px solid #eee;">${row.label}</td>`;
+
+                    tableData.forEach(data => {
+                        const value = data[row.key];
+                        const displayValue = row.isPercentage ? value.toFixed(2) + '%' : formatCurrency(value);
+                        tableHTML += `<td style="padding: 12px; text-align: center; background: ${bgColor}; font-weight: ${fontWeight}; color: ${textColor}; border-right: 1px solid #eee;">${displayValue}</td>`;
+                    });
+
+                    tableHTML += `</tr>`;
+                });
+
+                document.getElementById('comparisonTableBody').innerHTML = tableHTML;
+            }
+
+            // Download PDF function
+            function downloadPDF() {
+                const income = parseFloat(document.getElementById('income').value) || 0;
+                const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;
+                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+                const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
+                const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+                const filingStatus = document.getElementById('filingStatus').value;
+
+                const printWindow = window.open('', '', 'height=800,width=1200');
+                printWindow.document.write(`
                 <html>
                 <head>
                     <title>Tax Planning Report 2025</title>
@@ -896,72 +940,73 @@
                 </body>
                 </html>
             `);
-            
-            printWindow.document.close();
-            setTimeout(() => {
-                printWindow.print();
-            }, 250);
-        }
 
-        // Download Excel function (CSV format)
-        function downloadExcel() {
-            const income = parseFloat(document.getElementById('income').value) || 0;
-            const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;
-            const solarRevenueYear = document.getElementById('solarRevenueYear').value;
-            const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
-            const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
-            const filingStatus = document.getElementById('filingStatus').value;
-            
-            // Prepare CSV content
-            let csv = 'Tax Planning Calculator 2025 - Solar Investment & Donation Strategy\n\n';
-            csv += 'INPUT PARAMETERS\n';
-            csv += `Filing Status,${filingStatus === 'married' ? 'Married Filing Jointly' : filingStatus === 'single' ? 'Single' : 'Head of Household'}\n`;
-            csv += `Annual Gross Income,${income}\n`;
-            csv += `Solar Investment Amount,${solarInvestment}\n`;
-            csv += `Solar Revenue Counted in Year,Year ${solarRevenueYear}\n`;
-            csv += `Solar Maintenance Rate,${maintenanceRate}%\n`;
-            csv += `Max Donation Deduction (% of AGI),${donationPercent}%\n`;
-            csv += `\nGenerated on,${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n\n`;
-            
-            csv += 'SOLAR INVESTMENT COMPARISON ($50K - $500K)\n';
-            
-            // Get table headers
-            const table = document.getElementById('comparisonTable');
-            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent);
-            csv += headers.join(',') + '\n';
-            
-            // Get table rows
-            const rows = document.getElementById('comparisonTableBody').querySelectorAll('tr');
-            rows.forEach(row => {
-                const cells = Array.from(row.querySelectorAll('td')).map(td => {
-                    let text = td.textContent.replace(/,/g, '');
-                    return `"${text}"`;
+                printWindow.document.close();
+                setTimeout(() => {
+                    printWindow.print();
+                }, 250);
+            }
+
+            // Download Excel function (CSV format)
+            function downloadExcel() {
+                const income = parseFloat(document.getElementById('income').value) || 0;
+                const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;
+                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+                const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
+                const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+                const filingStatus = document.getElementById('filingStatus').value;
+
+                // Prepare CSV content
+                let csv = 'Tax Planning Calculator 2025 - Solar Investment & Donation Strategy\n\n';
+                csv += 'INPUT PARAMETERS\n';
+                csv += `Filing Status,${filingStatus === 'married' ? 'Married Filing Jointly' : filingStatus === 'single' ? 'Single' : 'Head of Household'}\n`;
+                csv += `Annual Gross Income,${income}\n`;
+                csv += `Solar Investment Amount,${solarInvestment}\n`;
+                csv += `Solar Revenue Counted in Year,Year ${solarRevenueYear}\n`;
+                csv += `Solar Maintenance Rate,${maintenanceRate}%\n`;
+                csv += `Max Donation Deduction (% of AGI),${donationPercent}%\n`;
+                csv += `\nGenerated on,${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n\n`;
+
+                csv += 'SOLAR INVESTMENT COMPARISON ($50K - $500K)\n';
+
+                // Get table headers
+                const table = document.getElementById('comparisonTable');
+                const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent);
+                csv += headers.join(',') + '\n';
+
+                // Get table rows
+                const rows = document.getElementById('comparisonTableBody').querySelectorAll('tr');
+                rows.forEach(row => {
+                    const cells = Array.from(row.querySelectorAll('td')).map(td => {
+                        let text = td.textContent.replace(/,/g, '');
+                        return `"${text}"`;
+                    });
+                    csv += cells.join(',') + '\n';
                 });
-                csv += cells.join(',') + '\n';
+
+                // Create download link
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `Tax_Planning_Report_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            // Calculate on page load
+            window.onload = function () {
+                calculateTax();
+            };
+
+            // Recalculate on any input change
+            document.querySelectorAll('input, select').forEach(element => {
+                element.addEventListener('input', calculateTax);
+                element.addEventListener('change', calculateTax);
             });
-            
-            // Create download link
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `Tax_Planning_Report_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+        </script>
+    </body>
 
-        // Calculate on page load
-        window.onload = function() {
-            calculateTax();
-        };
-
-        // Recalculate on any input change
-        document.querySelectorAll('input, select').forEach(element => {
-            element.addEventListener('input', calculateTax);
-            element.addEventListener('change', calculateTax);
-        });
-    </script>
-</body>
 </html>
