@@ -17,16 +17,16 @@
     "2025",
     "tax-planning"
   ],
-  "author": "Your Name",
+  "author": "svyas73",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/tax-2025-calculator.git"
+    "url": "https://github.com/svyas73/tax-2025-calculator.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/tax-2025-calculator/issues"
+    "url": "https://github.com/svyas73/tax-2025-calculator/issues"
   },
-  "homepage": "https://github.com/yourusername/tax-2025-calculator#readme",
+  "homepage": "https://github.com/svyas73/tax-2025-calculator#readme",
   "devDependencies": {},
   "engines": {
     "node": ">=14.0.0"
