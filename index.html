@@ -693,18 +693,18 @@
                 // Total outflow = donation + solar investment + total tax (after credit) + maintenance
                 const totalOutflow = donation + solarInvestment + totalTax + solarMaintenance;
 
-            // Final tax liability equals total outflow (credit already applied)
-            let finalTaxLiability = totalOutflow;
-            
-            // Add Year 2 tax after credit if Year 2 is selected
-            if (solarRevenueYear === "2") {
-                const year2Revenue = solarInvestment * 1.5;
-                const year2Tax = year2Revenue * 0.20;
-                const year2TaxAfterCredit = Math.max(0, year2Tax - carryForward);
-                finalTaxLiability += year2TaxAfterCredit;
-            }
+                // Final tax liability equals total outflow (credit already applied)
+                let finalTaxLiability = totalOutflow;
 
-            const effectiveRate = (finalTaxLiability / income) * 100;
+                // Add Year 2 tax after credit if Year 2 is selected
+                if (solarRevenueYear === "2") {
+                    const year2Revenue = solarInvestment * 1.5;
+                    const year2Tax = year2Revenue * 0.20;
+                    const year2TaxAfterCredit = Math.max(0, year2Tax - carryForward);
+                    finalTaxLiability += year2TaxAfterCredit;
+                }
+
+                const effectiveRate = (finalTaxLiability / income) * 100;
 
                 // Update CA depreciation label based on method
                 const caDepreciationLabel = document.getElementById('caDepreciationLabel');
@@ -724,15 +724,15 @@
                     const year2Revenue = solarInvestment * 1.5;
                     const year2PossibleTax = year2Revenue * 0.20;
                     const year2TaxAfterCredit = Math.max(0, year2PossibleTax - carryForward);
-                    
+
                     document.getElementById('year2RevenueRow').style.display = '';
                     document.getElementById('year2TaxRow').style.display = '';
                     document.getElementById('displayYear2Revenue').textContent = formatCurrency(year2Revenue);
                     document.getElementById('displayYear2Tax').textContent = formatCurrency(year2PossibleTax);
 
-                // Show Year 2 minimum tax card
-                document.getElementById('year2MinTaxCard').style.display = 'block';
-                document.getElementById('displayYear2MinTax').textContent = formatCurrency(year2TaxAfterCredit);
+                    // Show Year 2 minimum tax card
+                    document.getElementById('year2MinTaxCard').style.display = 'block';
+                    document.getElementById('displayYear2MinTax').textContent = formatCurrency(year2TaxAfterCredit);
                 } else {
                     document.getElementById('year2RevenueRow').style.display = 'none';
                     document.getElementById('year2TaxRow').style.display = 'none';
@@ -807,9 +807,10 @@
                     { label: 'Total Tax (Fed + CA after credit)', key: 'totalTax', highlight: true, isPercentage: false, textColor: 'red' },
                     { label: 'Total Outflow', key: 'totalOutflow', highlight: true, isPercentage: false, textColor: 'default' },
                     { label: 'Final Tax (Effective)', key: 'finalTaxLiability', highlight: true, isPercentage: false, textColor: 'default' },
-                { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
-                { label: 'Total Year 2 Tax after credit, if any', key: 'year2TaxAfterCredit', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true }
+                    { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
+                    { label: 'Total Year 2 Tax after credit, if any', key: 'year2TaxAfterCredit', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
+                    { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
+                { label: 'Total Tax (Year 1 + Year 2) - After Carry Forward', key: 'totalTaxAfterCarryForward', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true }
                 ];
 
                 const tableData = solarInvestments.map(solarInv => {
@@ -866,14 +867,17 @@
                     const finalTaxLiability = totalOutflow;
                     const effectiveRate = (finalTaxLiability / income) * 100;
 
-                // Year 2 revenue calculations
-                const year2Revenue = solarInv * 1.5;
-                const year2Tax = year2Revenue * 0.20;
+                    // Year 2 revenue calculations
+                    const year2Revenue = solarInv * 1.5;
+                    const year2Tax = year2Revenue * 0.20;
+
+                    // Year 2 tax after credit: Apply any carry forward credit to Year 2 tax
+                    const year2TaxAfterCredit = Math.max(0, year2Tax - carryForward);
+
+                    const totalTaxBothYears = finalTaxLiability + year2TaxAfterCredit;
                 
-                // Year 2 tax after credit: Apply any carry forward credit to Year 2 tax
-                const year2TaxAfterCredit = Math.max(0, year2Tax - carryForward);
-                
-                const totalTaxBothYears = finalTaxLiability + year2TaxAfterCredit;
+                // Total tax after carry forward: Subtract carry forward credit from total tax
+                const totalTaxAfterCarryForward = Math.max(0, totalTaxBothYears - carryForward);
 
                     return {
                         income: income,
@@ -884,6 +888,7 @@
                         year2Revenue: year2Revenue,
                         year2Tax: year2Tax,
                         year2TaxAfterCredit: year2TaxAfterCredit,
+                        totalTaxAfterCarryForward: totalTaxAfterCarryForward,
                         reducedAGI: reducedAGI,
                         maxDonationDeduction: maxDonationDeduction,
                         donation: donation,
