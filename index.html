@@ -804,13 +804,12 @@
                     { label: 'Federal Tax After Credit', key: 'federalTaxAfterCredit', highlight: false, isPercentage: false, textColor: 'red' },
                     { label: 'Federal Credit Carry Forward', key: 'carryForward', highlight: false, isPercentage: false, textColor: 'green' },
                     { label: 'CA Tax', key: 'caTax', highlight: false, isPercentage: false, textColor: 'red' },
-                    { label: 'Total Tax (Fed + CA after credit)', key: 'totalTax', highlight: true, isPercentage: false, textColor: 'red' },
+                    { label: 'Total Tax (Fed + CA)', key: 'totalTax', highlight: true, isPercentage: false, textColor: 'red' },
                     { label: 'Total Outflow', key: 'totalOutflow', highlight: true, isPercentage: false, textColor: 'default' },
                     { label: 'Final Tax (Effective)', key: 'finalTaxLiability', highlight: true, isPercentage: false, textColor: 'default' },
-                    { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
-                    { label: 'Total Year 2 Tax after credit, if any', key: 'year2TaxAfterCredit', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                    { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                { label: 'Total Tax (Year 1 + Year 2) - After Carry Forward', key: 'totalTaxAfterCarryForward', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true }
+                { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
+                { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
+                    { label: 'Total Tax (Year 1 + Year 2) - After Carry Forward', key: 'totalTaxAfterCarryForward', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true }
                 ];
 
                 const tableData = solarInvestments.map(solarInv => {
@@ -875,9 +874,9 @@
                     const year2TaxAfterCredit = Math.max(0, year2Tax - carryForward);
 
                     const totalTaxBothYears = finalTaxLiability + year2TaxAfterCredit;
-                
-                // Total tax after carry forward: Subtract carry forward credit from total tax
-                const totalTaxAfterCarryForward = Math.max(0, totalTaxBothYears - carryForward);
+
+                    // Total tax after carry forward: Subtract carry forward credit from total tax
+                    const totalTaxAfterCarryForward = Math.max(0, totalTaxBothYears - carryForward);
 
                     return {
                         income: income,
@@ -887,7 +886,6 @@
                         caDepreciation: caDepreciation,
                         year2Revenue: year2Revenue,
                         year2Tax: year2Tax,
-                        year2TaxAfterCredit: year2TaxAfterCredit,
                         totalTaxAfterCarryForward: totalTaxAfterCarryForward,
                         reducedAGI: reducedAGI,
                         maxDonationDeduction: maxDonationDeduction,
