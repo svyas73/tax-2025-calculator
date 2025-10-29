@@ -305,6 +305,15 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label>Treat CA Depreciation over 6 years?</label>
+                        <select id="caDepreciationMethod">
+                            <option value="6years">Yes - 6 years straight-line on total assets (2.5x)</option>
+                            <option value="federal">No - Same as Federal depreciation</option>
+                        </select>
+                        <div class="info-text">Choose CA depreciation method: 6-year straight-line or match Federal</div>
+                    </div>
+
                     <button onclick="calculateTax()">🧮 Calculate Taxes</button>
                 </div>
 
@@ -326,10 +335,10 @@
                             <span class="result-label">Solar Depreciation (Federal)</span>
                             <span class="result-value" id="displayFederalDepreciation">$0</span>
                         </div>
-                        <div class="result-row">
-                            <span class="result-label">Solar Depreciation (CA - Year 1 of 6 on Total Assets)</span>
-                            <span class="result-value" id="displayCADepreciation">$0</span>
-                        </div>
+                    <div class="result-row">
+                        <span class="result-label" id="caDepreciationLabel">Solar Depreciation (CA - Year 1 of 6 on Total Assets)</span>
+                        <span class="result-value" id="displayCADepreciation">$0</span>
+                    </div>
                         <div class="result-row" id="year2RevenueRow" style="display: none;">
                             <span class="result-label">Revenue in Year 2</span>
                             <span class="result-value negative" id="displayYear2Revenue">$0</span>
@@ -612,9 +621,10 @@
                 const filingStatus = document.getElementById('filingStatus').value;
                 const income = parseFloat(document.getElementById('income').value) || 0;  // B2
                 const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;  // B3
-                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
-                const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
-                const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+            const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+            const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
+            const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+            const caDepreciationMethod = document.getElementById('caDepreciationMethod').value;
 
                 // B4: Solar Maintenance = B3 * 0.1
                 const solarMaintenance = solarInvestment * (maintenanceRate / 100);
@@ -629,9 +639,16 @@
                     federalDepreciation = solarInvestment * 2;  // 2x
                 }
 
-                // CA Depreciation: Straight-line over 6 years on total assets (2.5x solar investment)
+            // CA Depreciation: Based on user selection
+            let caDepreciation;
+            if (caDepreciationMethod === '6years') {
+                // 6 years straight-line on total assets (2.5x solar investment)
                 const totalAssets = solarInvestment * 2.5;
-                const caDepreciation = totalAssets / 6;
+                caDepreciation = totalAssets / 6;
+            } else {
+                // Same as Federal depreciation
+                caDepreciation = federalDepreciation;
+            }
 
                 // B6: Reduced AGI (after depreciation) - use Federal depreciation for donation calculation
                 const reducedAGI = income - federalDepreciation;
@@ -679,10 +696,18 @@
 
                 const effectiveRate = (finalTaxLiability / income) * 100;
 
-                // Display results - Following Excel structure
-                document.getElementById('displayIncome').textContent = formatCurrency(income);
-                document.getElementById('displayFederalDepreciation').textContent = formatCurrency(federalDepreciation);
-                document.getElementById('displayCADepreciation').textContent = formatCurrency(caDepreciation);
+            // Update CA depreciation label based on method
+            const caDepreciationLabel = document.getElementById('caDepreciationLabel');
+            if (caDepreciationMethod === '6years') {
+                caDepreciationLabel.textContent = 'Solar Depreciation (CA - Year 1 of 6 on Total Assets)';
+            } else {
+                caDepreciationLabel.textContent = 'Solar Depreciation (CA - Same as Federal)';
+            }
+
+            // Display results - Following Excel structure
+            document.getElementById('displayIncome').textContent = formatCurrency(income);
+            document.getElementById('displayFederalDepreciation').textContent = formatCurrency(federalDepreciation);
+            document.getElementById('displayCADepreciation').textContent = formatCurrency(caDepreciation);
 
                 // Show Year 2 revenue info if Year 2 is selected
                 if (solarRevenueYear === "2") {
@@ -742,9 +767,10 @@
             function updateComparisonTable() {
                 const filingStatus = document.getElementById('filingStatus').value;
                 const income = parseFloat(document.getElementById('income').value) || 0;
-                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
-                const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
-                const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+            const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+            const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
+            const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+            const caDepreciationMethod = document.getElementById('caDepreciationMethod').value;
 
                 const solarInvestments = [50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000, 500000];
 
@@ -753,7 +779,7 @@
                     { label: 'Solar Investment', key: 'solarInvestment', highlight: false, isPercentage: false, textColor: 'red' },
                     { label: 'Solar Maintenance', key: 'solarMaintenance', highlight: false, isPercentage: false, textColor: 'red' },
                     { label: 'Solar Depreciation (Federal)', key: 'federalDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
-                    { label: 'Solar Depreciation (CA - Yr 1 of 6 on Total Assets)', key: 'caDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: 'Solar Depreciation (CA - Method varies)', key: 'caDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
                     { label: 'Revenue in Year 2', key: 'year2Revenue', highlight: false, isPercentage: false, textColor: 'red', showOnlyYear2: true },
                     { label: 'Possible Least Tax (20%)', key: 'year2Tax', highlight: false, isPercentage: false, textColor: 'red', showOnlyYear2: true },
                     { label: 'Reduced AGI', key: 'reducedAGI', highlight: false, isPercentage: false, textColor: 'default' },
@@ -784,9 +810,16 @@
                         federalDepreciation = solarInv * 2;  // 2x
                     }
 
-                    // CA Depreciation: Straight-line over 6 years on total assets (2.5x solar investment)
+                // CA Depreciation: Based on user selection
+                let caDepreciation;
+                if (caDepreciationMethod === '6years') {
+                    // 6 years straight-line on total assets (2.5x solar investment)
                     const totalAssets = solarInv * 2.5;
-                    const caDepreciation = totalAssets / 6;
+                    caDepreciation = totalAssets / 6;
+                } else {
+                    // Same as Federal depreciation
+                    caDepreciation = federalDepreciation;
+                }
 
                     const reducedAGI = income - federalDepreciation;
                     const maxDonationDeduction = reducedAGI * (donationPercent / 100);
@@ -890,9 +923,10 @@
             function downloadPDF() {
                 const income = parseFloat(document.getElementById('income').value) || 0;
                 const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;
-                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
-                const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
-                const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+            const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+            const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
+            const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+            const caDepreciationMethod = document.getElementById('caDepreciationMethod').value;
                 const filingStatus = document.getElementById('filingStatus').value;
 
                 const printWindow = window.open('', '', 'height=800,width=1200');
@@ -928,6 +962,7 @@
                         <div class="param-row"><strong>Solar Revenue Counted in Year:</strong> <span>Year ${solarRevenueYear}</span></div>
                         <div class="param-row"><strong>Solar Maintenance Rate:</strong> <span>${maintenanceRate}%</span></div>
                         <div class="param-row"><strong>Max Donation Deduction (% of AGI):</strong> <span>${donationPercent}%</span></div>
+                        <div class="param-row"><strong>CA Depreciation Method:</strong> <span>${caDepreciationMethod === '6years' ? '6 years on total assets' : 'Same as Federal'}</span></div>
                     </div>
                     
                     <h2>📊 Solar Investment Comparison ($50K - $500K)</h2>
@@ -951,9 +986,10 @@
             function downloadExcel() {
                 const income = parseFloat(document.getElementById('income').value) || 0;
                 const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;
-                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
-                const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
-                const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+            const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+            const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
+            const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+            const caDepreciationMethod = document.getElementById('caDepreciationMethod').value;
                 const filingStatus = document.getElementById('filingStatus').value;
 
                 // Prepare CSV content
@@ -963,8 +999,9 @@
                 csv += `Annual Gross Income,${income}\n`;
                 csv += `Solar Investment Amount,${solarInvestment}\n`;
                 csv += `Solar Revenue Counted in Year,Year ${solarRevenueYear}\n`;
-                csv += `Solar Maintenance Rate,${maintenanceRate}%\n`;
-                csv += `Max Donation Deduction (% of AGI),${donationPercent}%\n`;
+            csv += `Solar Maintenance Rate,${maintenanceRate}%\n`;
+            csv += `Max Donation Deduction (% of AGI),${donationPercent}%\n`;
+            csv += `CA Depreciation Method,${caDepreciationMethod === '6years' ? '6 years on total assets' : 'Same as Federal'}\n`;
                 csv += `\nGenerated on,${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n\n`;
 
                 csv += 'SOLAR INVESTMENT COMPARISON ($50K - $500K)\n';
