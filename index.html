@@ -807,9 +807,10 @@
                     { label: 'Total Tax (Fed + CA)', key: 'totalTax', highlight: true, isPercentage: false, textColor: 'red' },
                     { label: 'Total Outflow', key: 'totalOutflow', highlight: true, isPercentage: false, textColor: 'default' },
                     { label: 'Final Tax (Effective)', key: 'finalTaxLiability', highlight: true, isPercentage: false, textColor: 'default' },
-                { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
+                    { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
                 { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                    { label: 'Total Tax (Year 1 + Year 2) - After Carry Forward', key: 'totalTaxAfterCarryForward', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true }
+                { label: 'Total Tax (Year 1 + Year 2) - After Carry Forward', key: 'totalTaxAfterCarryForward', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
+                { label: 'Effective Tax Rate - after Carry Forward', key: 'effectiveRateAfterCarryForward', highlight: true, isPercentage: true, textColor: 'default', showOnlyYear2: true }
                 ];
 
                 const tableData = solarInvestments.map(solarInv => {
@@ -875,8 +876,11 @@
 
                     const totalTaxBothYears = finalTaxLiability + year2TaxAfterCredit;
 
-                    // Total tax after carry forward: Subtract carry forward credit from total tax
-                    const totalTaxAfterCarryForward = Math.max(0, totalTaxBothYears - carryForward);
+                // Total tax after carry forward: Subtract carry forward credit from total tax
+                const totalTaxAfterCarryForward = Math.max(0, totalTaxBothYears - carryForward);
+                
+                // Effective tax rate after carry forward: Total tax after carry forward as % of income
+                const effectiveRateAfterCarryForward = (totalTaxAfterCarryForward / income) * 100;
 
                     return {
                         income: income,
@@ -887,6 +891,7 @@
                         year2Revenue: year2Revenue,
                         year2Tax: year2Tax,
                         totalTaxAfterCarryForward: totalTaxAfterCarryForward,
+                        effectiveRateAfterCarryForward: effectiveRateAfterCarryForward,
                         reducedAGI: reducedAGI,
                         maxDonationDeduction: maxDonationDeduction,
                         donation: donation,
