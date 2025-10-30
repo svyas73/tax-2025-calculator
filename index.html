@@ -806,11 +806,10 @@
                     { label: 'CA Tax', key: 'caTax', highlight: false, isPercentage: false, textColor: 'red' },
                     { label: 'Total Tax (Fed + CA)', key: 'totalTax', highlight: true, isPercentage: false, textColor: 'red' },
                     { label: 'Total Outflow', key: 'totalOutflow', highlight: true, isPercentage: false, textColor: 'default' },
-                    { label: 'Final Tax (Effective)', key: 'finalTaxLiability', highlight: true, isPercentage: false, textColor: 'default' },
                     { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
-                { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                { label: 'Total Tax (Year 1 + Year 2) - After Carry Forward', key: 'totalTaxAfterCarryForward', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                { label: 'Effective Tax Rate - after Carry Forward', key: 'effectiveRateAfterCarryForward', highlight: true, isPercentage: true, textColor: 'default', showOnlyYear2: true }
+                    { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
+                    { label: 'Total Tax (Year 1 + Year 2) - After Carry Forward', key: 'totalTaxAfterCarryForward', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
+                    { label: 'Effective Tax Rate - after Carry Forward', key: 'effectiveRateAfterCarryForward', highlight: true, isPercentage: true, textColor: 'default', showOnlyYear2: true }
                 ];
 
                 const tableData = solarInvestments.map(solarInv => {
@@ -874,13 +873,14 @@
                     // Year 2 tax after credit: Apply any carry forward credit to Year 2 tax
                     const year2TaxAfterCredit = Math.max(0, year2Tax - carryForward);
 
-                    const totalTaxBothYears = finalTaxLiability + year2TaxAfterCredit;
+                    // Total Tax (Year 1 + Year 2) = Total Outflow (Year 1) + Possible Least Tax (20%) (Year 2)
+                    const totalTaxBothYears = totalOutflow + year2Tax;
 
-                // Total tax after carry forward: Subtract carry forward credit from total tax
-                const totalTaxAfterCarryForward = Math.max(0, totalTaxBothYears - carryForward);
-                
-                // Effective tax rate after carry forward: Total tax after carry forward as % of income
-                const effectiveRateAfterCarryForward = (totalTaxAfterCarryForward / income) * 100;
+                    // Total tax after carry forward: Subtract carry forward credit from total tax
+                    const totalTaxAfterCarryForward = Math.max(0, totalTaxBothYears - carryForward);
+
+                    // Effective tax rate after carry forward: Total tax after carry forward as % of income
+                    const effectiveRateAfterCarryForward = (totalTaxAfterCarryForward / income) * 100;
 
                     return {
                         income: income,
