@@ -320,7 +320,7 @@
                     <div class="form-group">
                         <label>Treat CA Depreciation over 6 years?</label>
                         <select id="caDepreciationMethod">
-                            <option value="6years">Yes - 6 years straight-line on total assets (2.5x)</option>
+                            <option value="6years">Yes - 6 years straight-line on total depreciation</option>
                             <option value="federal" selected>No - Same as Federal depreciation</option>
                         </select>
                         <div class="info-text">Choose CA depreciation method: 6-year straight-line or match Federal
@@ -678,9 +678,8 @@
                     // CA Depreciation: Based on user selection
                     let caDepreciation;
                     if (caDepreciationMethod === '6years') {
-                        // 6 years straight-line on total assets (2.5x solar investment)
-                        const totalAssets = solarInvestment * 2.5;
-                        caDepreciation = totalAssets / 6;
+                        // 6 years straight-line on total depreciation (actual calculated depreciation)
+                        caDepreciation = solarDepreciation / 6;
                     } else {
                         // Same as Federal depreciation
                         caDepreciation = federalDepreciation;
@@ -740,7 +739,7 @@
                     // Update CA depreciation label based on method
                     const caDepreciationLabel = document.getElementById('caDepreciationLabel');
                     if (caDepreciationMethod === '6years') {
-                        caDepreciationLabel.textContent = 'Solar Depreciation (CA - Year 1 of 6 on Total Assets)';
+                        caDepreciationLabel.textContent = 'Solar Depreciation (CA - Year 1 of 6 on Total Depreciation)';
                     } else {
                         caDepreciationLabel.textContent = 'Solar Depreciation (CA - Same as Federal)';
                     }
@@ -880,9 +879,8 @@
                     // CA Depreciation: Based on user selection
                     let caDepreciation;
                     if (caDepreciationMethod === '6years') {
-                        // 6 years straight-line on total assets (2.5x solar investment)
-                        const totalAssets = solarInv * 2.5;
-                        caDepreciation = totalAssets / 6;
+                        // 6 years straight-line on total depreciation (actual calculated depreciation)
+                        caDepreciation = solarDepreciation / 6;
                     } else {
                         // Same as Federal depreciation
                         caDepreciation = federalDepreciation;
