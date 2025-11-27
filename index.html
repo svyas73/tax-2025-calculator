@@ -278,29 +278,41 @@
 
                     <div class="form-group">
                         <label>Solar Investment Amount</label>
-                        <input type="number" id="solarInvestment" value="200000" min="0" step="1000">
+                        <input type="number" id="solarInvestment" value="0" min="0" step="1000">
                         <div class="info-text">Gets almost same amount as tax credit in first year</div>
                     </div>
 
                     <div class="form-group">
-                        <label>Solar Revenue Counted in Year</label>
-                        <select id="solarRevenueYear">
-                            <option value="1">Year 1</option>
-                            <option value="2">Year 2</option>
+                        <label>Solar company Mark-up (%)</label>
+                        <input type="number" id="solarMarkup" value="10" min="0" max="100" step="0.1">
+                        <div class="info-text">Solar company mark-up percentage</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Income credit (%)</label>
+                        <input type="number" id="incomeCredit" value="50" min="0" max="100" step="0.1">
+                        <div class="info-text">Income credit percentage</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Depreciation Recapture</label>
+                        <select id="depreciationRecaptureYear">
+                            <option value="6" selected>Year 6</option>
+                            <option value="10">Year 10</option>
                         </select>
-                        <div class="info-text">Year 1: Revenue (1.5x) netted with depreciation (2x). Year 2: Full
-                            depreciation (2x) in Year 1</div>
+                        <div class="info-text">Year when depreciation recapture tax is paid. Calculated as (total
+                            depreciation - solar investment) taxed at 24%</div>
                     </div>
 
                     <div class="form-group">
                         <label>Solar Annual Maintenance (%)</label>
-                        <input type="number" id="maintenanceRate" value="10" min="0" max="100" step="0.1">
+                        <input type="number" id="maintenanceRate" value="0" min="0" max="100" step="0.1">
                         <div class="info-text">Annual maintenance as % of solar investment</div>
                     </div>
 
                     <div class="form-group">
                         <label>Max Donation Deduction (% of Reduced AGI)</label>
-                        <input type="number" id="donationPercent" value="60" min="0" max="60" step="0.1">
+                        <input type="number" id="donationPercent" value="50" min="0" max="60" step="0.1">
                         <div class="info-text">Maximum 60% of Reduced AGI. Actual donation paid = 20% of this amount
                         </div>
                     </div>
@@ -309,7 +321,7 @@
                         <label>Treat CA Depreciation over 6 years?</label>
                         <select id="caDepreciationMethod">
                             <option value="6years">Yes - 6 years straight-line on total assets (2.5x)</option>
-                            <option value="federal">No - Same as Federal depreciation</option>
+                            <option value="federal" selected>No - Same as Federal depreciation</option>
                         </select>
                         <div class="info-text">Choose CA depreciation method: 6-year straight-line or match Federal
                         </div>
@@ -329,6 +341,14 @@
                             <span class="result-value negative" id="displaySolarInvestment">$0</span>
                         </div>
                         <div class="result-row">
+                            <span class="result-label">Solar Tax Credit</span>
+                            <span class="result-value positive" id="displaySolarTaxCredit">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Solar Depreciation</span>
+                            <span class="result-value" id="displaySolarDepreciation">$0</span>
+                        </div>
+                        <div class="result-row">
                             <span class="result-label">Solar Maintenance</span>
                             <span class="result-value negative" id="displayMaintenance">$0</span>
                         </div>
@@ -341,13 +361,14 @@
                                 Total Assets)</span>
                             <span class="result-value" id="displayCADepreciation">$0</span>
                         </div>
-                        <div class="result-row" id="year2RevenueRow" style="display: none;">
-                            <span class="result-label">Revenue in Year 2</span>
-                            <span class="result-value negative" id="displayYear2Revenue">$0</span>
+                        <div class="result-row">
+                            <span class="result-label">Depreciation Recapture (Year <span
+                                    id="displayRecaptureYear">6</span>)</span>
+                            <span class="result-value" id="displayDepreciationRecapture">$0</span>
                         </div>
-                        <div class="result-row" id="year2TaxRow" style="display: none;">
-                            <span class="result-label">Possible Least Tax (20%)</span>
-                            <span class="result-value negative" id="displayYear2Tax">$0</span>
+                        <div class="result-row">
+                            <span class="result-label">Depreciation Recapture Tax (24%)</span>
+                            <span class="result-value negative" id="displayDepreciationRecaptureTax">$0</span>
                         </div>
                     </div>
 
@@ -611,189 +632,209 @@
             }
 
             function formatNumber(num) {
+                if (isNaN(num) || !isFinite(num)) {
+                    return '0';
+                }
                 return num.toLocaleString('en-US', { maximumFractionDigits: 0 });
             }
 
             function formatCurrency(num) {
+                if (num === null || num === undefined || isNaN(num) || !isFinite(num)) {
+                    return '$0';
+                }
                 return '$' + formatNumber(Math.round(num));
             }
 
             function calculateTax() {
-                // Get inputs
-                const filingStatus = document.getElementById('filingStatus').value;
-                const income = parseFloat(document.getElementById('income').value) || 0;  // B2
-                const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;  // B3
-                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
-                const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
-                const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
-                const caDepreciationMethod = document.getElementById('caDepreciationMethod').value;
+                try {
+                    // Get inputs
+                    const filingStatus = document.getElementById('filingStatus').value;
+                    const income = parseFloat(document.getElementById('income').value) || 0;  // B2
+                    const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;  // B3
+                    const solarMarkup = parseFloat(document.getElementById('solarMarkup').value) || 0;
+                    const incomeCredit = parseFloat(document.getElementById('incomeCredit').value) || 0;
+                    const depreciationRecaptureYear = document.getElementById('depreciationRecaptureYear').value;
+                    const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
+                    const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
+                    const caDepreciationMethod = document.getElementById('caDepreciationMethod').value;
 
-                // B4: Solar Maintenance = B3 * 0.1
-                const solarMaintenance = solarInvestment * (maintenanceRate / 100);
+                    // Calculate Solar Tax Credit = Solar Investment / (1 + Solar company Mark-up (%))
+                    // Guard against division by zero - ensure denominator is never 0
+                    const markupDenominator = 1 + (solarMarkup / 100);
+                    const solarTaxCredit = markupDenominator > 0 ? solarInvestment / markupDenominator : solarInvestment;
 
-                // B5: Solar Depreciation for Federal
-                // Year 1: (B3*2) - (B3*1.5) = B3 * 0.5 (revenue netted with depreciation)
-                // Year 2: B3 * 2 (full depreciation, revenue counted in year 2)
-                let federalDepreciation;
-                if (solarRevenueYear === "1") {
-                    federalDepreciation = (solarInvestment * 2) - (solarInvestment * 1.5);  // 0.5x
-                } else {
-                    federalDepreciation = solarInvestment * 2;  // 2x
+                    // Calculate Solar Depreciation = Solar Tax Credit / Income credit(%)
+                    // Guard against division by zero - use 50% as default if incomeCredit is 0 or invalid
+                    const effectiveIncomeCredit = incomeCredit > 0 ? incomeCredit : 50;
+                    const incomeCreditDecimal = effectiveIncomeCredit / 100;
+                    const solarDepreciation = solarTaxCredit / incomeCreditDecimal;
+
+                    // B4: Solar Maintenance = B3 * 0.1
+                    const solarMaintenance = solarInvestment * (maintenanceRate / 100);
+
+                    // B5: Solar Depreciation for Federal - use full depreciation
+                    const federalDepreciation = solarDepreciation;
+
+                    // CA Depreciation: Based on user selection
+                    let caDepreciation;
+                    if (caDepreciationMethod === '6years') {
+                        // 6 years straight-line on total assets (2.5x solar investment)
+                        const totalAssets = solarInvestment * 2.5;
+                        caDepreciation = totalAssets / 6;
+                    } else {
+                        // Same as Federal depreciation
+                        caDepreciation = federalDepreciation;
+                    }
+
+                    // B6: Reduced AGI (after depreciation) - use Federal depreciation for donation calculation
+                    const reducedAGI = income - federalDepreciation;
+
+                    // B7: 60% max donation deduction = B6 * 0.6 (user can adjust this percentage)
+                    const maxDonationDeduction = reducedAGI * (donationPercent / 100);
+
+                    // B8: Donation paid to meet deduction (20%) = B7 * 0.2 (always 20% of max deduction)
+                    const donation = maxDonationDeduction * 0.2;
+
+                    // B9: Final AGI for Federal = B2 - Federal Depreciation - B7
+                    const federalFinalAGI = income - federalDepreciation - maxDonationDeduction;
+
+                    // CA Final AGI = B2 - CA Depreciation - B7 (CA uses its own depreciation)
+                    const caFinalAGI = income - caDepreciation - maxDonationDeduction;
+
+                    // Calculate Federal Tax and CA Tax on respective Final AGIs
+                    const federalResult = calculateProgressiveTax(federalFinalAGI, federalBrackets[filingStatus]);
+                    const federalTax = federalResult.tax;
+
+                    const caResult = calculateProgressiveTax(caFinalAGI, caBrackets);
+                    const caTax = caResult.tax;
+
+                    // Solar tax credit is already calculated above: Solar Investment / (1 + Mark-up %)
+                    // Calculate Federal tax after credit
+                    let federalTaxAfterCredit = federalTax - solarTaxCredit;
+                    let carryForward = 0;
+
+                    // If Federal tax becomes negative, it carries forward to next year
+                    if (federalTaxAfterCredit < 0) {
+                        carryForward = Math.abs(federalTaxAfterCredit);
+                        federalTaxAfterCredit = 0;
+                    }
+
+                    // Total tax is Federal (after credit) + CA
+                    const totalTax = federalTaxAfterCredit + caTax;
+
+                    // Total outflow = donation + solar investment + total tax (after credit) + maintenance
+                    const totalOutflow = donation + solarInvestment + totalTax + solarMaintenance;
+
+                    // Final tax liability equals total outflow (credit already applied)
+                    const finalTaxLiability = totalOutflow;
+
+                    // Calculate Depreciation Recapture = total depreciation - solar investment
+                    // Total depreciation is the solarDepreciation value
+                    const depreciationRecapture = Math.max(0, solarDepreciation - solarInvestment);
+
+                    // Depreciation Recapture tax = Depreciation Recapture * 24%
+                    const depreciationRecaptureTax = depreciationRecapture * 0.24;
+
+                    const effectiveRate = income > 0 ? (finalTaxLiability / income) * 100 : 0;
+
+                    // Update CA depreciation label based on method
+                    const caDepreciationLabel = document.getElementById('caDepreciationLabel');
+                    if (caDepreciationMethod === '6years') {
+                        caDepreciationLabel.textContent = 'Solar Depreciation (CA - Year 1 of 6 on Total Assets)';
+                    } else {
+                        caDepreciationLabel.textContent = 'Solar Depreciation (CA - Same as Federal)';
+                    }
+
+                    // Display results - Following Excel structure
+                    document.getElementById('displayIncome').textContent = formatCurrency(income);
+                    document.getElementById('displayFederalDepreciation').textContent = formatCurrency(federalDepreciation);
+                    document.getElementById('displayCADepreciation').textContent = formatCurrency(caDepreciation);
+
+                    // Display Depreciation Recapture
+                    document.getElementById('displayRecaptureYear').textContent = depreciationRecaptureYear;
+                    document.getElementById('displayDepreciationRecapture').textContent = formatCurrency(depreciationRecapture);
+                    document.getElementById('displayDepreciationRecaptureTax').textContent = formatCurrency(depreciationRecaptureTax);
+
+                    // Hide Year 2 revenue rows (no longer used) - check if elements exist first
+                    const year2RevenueRow = document.getElementById('year2RevenueRow');
+                    const year2TaxRow = document.getElementById('year2TaxRow');
+                    const year2MinTaxCard = document.getElementById('year2MinTaxCard');
+                    if (year2RevenueRow) year2RevenueRow.style.display = 'none';
+                    if (year2TaxRow) year2TaxRow.style.display = 'none';
+                    if (year2MinTaxCard) year2MinTaxCard.style.display = 'none';
+
+                    document.getElementById('displayAGI').textContent = formatCurrency(reducedAGI);
+                    document.getElementById('displayStandardDeduction').textContent = formatCurrency(maxDonationDeduction);
+                    document.getElementById('displayDonation').textContent = formatCurrency(donation);
+                    document.getElementById('displayFederalFinalAGI').textContent = formatCurrency(federalFinalAGI);
+                    document.getElementById('displayCAFinalAGI').textContent = formatCurrency(caFinalAGI);
+
+                    // Display tax totals
+                    document.getElementById('displayFederalTax').textContent = formatCurrency(federalTax);
+                    document.getElementById('displayFederalSolarCredit').textContent = formatCurrency(solarTaxCredit);
+                    document.getElementById('displayFederalTaxAfterCredit').textContent = formatCurrency(federalTaxAfterCredit);
+
+                    // Show carryforward if applicable
+                    if (carryForward > 0) {
+                        document.getElementById('carryForwardRow').style.display = '';
+                        document.getElementById('displayCarryForward').textContent = formatCurrency(carryForward);
+                    } else {
+                        document.getElementById('carryForwardRow').style.display = 'none';
+                    }
+
+                    document.getElementById('displayCATax').textContent = formatCurrency(caTax);
+                    document.getElementById('displayTotalTax').textContent = formatCurrency(totalTax);
+
+                    // Solar benefits - display values directly (they're already calculated)
+                    document.getElementById('displaySolarInvestment').textContent = formatCurrency(solarInvestment);
+                    document.getElementById('displaySolarTaxCredit').textContent = formatCurrency(solarTaxCredit);
+                    document.getElementById('displaySolarDepreciation').textContent = formatCurrency(solarDepreciation);
+                    document.getElementById('displayMaintenance').textContent = formatCurrency(solarMaintenance);
+
+                    // Final calculations
+                    document.getElementById('displayFinalTax').textContent = formatCurrency(finalTaxLiability);
+                    document.getElementById('displayTotalOutflow').textContent = formatCurrency(totalOutflow);
+                    document.getElementById('displayTotalOutflowDisplay').textContent = formatCurrency(totalOutflow);
+                    document.getElementById('displayEffectiveTax').textContent = formatCurrency(finalTaxLiability);
+                    document.getElementById('displayEffectiveRate').textContent = effectiveRate.toFixed(2) + '%';
+
+                    // Update comparison table
+                    updateComparisonTable();
+                } catch (error) {
+                    console.error('Error in calculateTax:', error);
                 }
-
-                // CA Depreciation: Based on user selection
-                let caDepreciation;
-                if (caDepreciationMethod === '6years') {
-                    // 6 years straight-line on total assets (2.5x solar investment)
-                    const totalAssets = solarInvestment * 2.5;
-                    caDepreciation = totalAssets / 6;
-                } else {
-                    // Same as Federal depreciation
-                    caDepreciation = federalDepreciation;
-                }
-
-                // B6: Reduced AGI (after depreciation) - use Federal depreciation for donation calculation
-                const reducedAGI = income - federalDepreciation;
-
-                // B7: 60% max donation deduction = B6 * 0.6 (user can adjust this percentage)
-                const maxDonationDeduction = reducedAGI * (donationPercent / 100);
-
-                // B8: Donation paid to meet deduction (20%) = B7 * 0.2 (always 20% of max deduction)
-                const donation = maxDonationDeduction * 0.2;
-
-                // B9: Final AGI for Federal = B2 - Federal Depreciation - B7
-                const federalFinalAGI = income - federalDepreciation - maxDonationDeduction;
-
-                // CA Final AGI = B2 - CA Depreciation - B7 (CA uses its own depreciation)
-                const caFinalAGI = income - caDepreciation - maxDonationDeduction;
-
-                // Calculate Federal Tax and CA Tax on respective Final AGIs
-                const federalResult = calculateProgressiveTax(federalFinalAGI, federalBrackets[filingStatus]);
-                const federalTax = federalResult.tax;
-
-                const caResult = calculateProgressiveTax(caFinalAGI, caBrackets);
-                const caTax = caResult.tax;
-
-                // Solar tax credit applies to Federal tax only (same as solar investment)
-                const solarTaxCredit = solarInvestment;
-
-                // Calculate Federal tax after credit
-                let federalTaxAfterCredit = federalTax - solarTaxCredit;
-                let carryForward = 0;
-
-                // If Federal tax becomes negative, it carries forward to next year
-                if (federalTaxAfterCredit < 0) {
-                    carryForward = Math.abs(federalTaxAfterCredit);
-                    federalTaxAfterCredit = 0;
-                }
-
-                // Total tax is Federal (after credit) + CA
-                const totalTax = federalTaxAfterCredit + caTax;
-
-                // Total outflow = donation + solar investment + total tax (after credit) + maintenance
-                const totalOutflow = donation + solarInvestment + totalTax + solarMaintenance;
-
-                // Final tax liability equals total outflow (credit already applied)
-                let finalTaxLiability = totalOutflow;
-
-                // Add Year 2 tax after credit if Year 2 is selected
-                if (solarRevenueYear === "2") {
-                    const year2Revenue = solarInvestment * 1.5;
-                    const year2Tax = year2Revenue * 0.20;
-                    const year2TaxAfterCredit = Math.max(0, year2Tax - carryForward);
-                    finalTaxLiability += year2TaxAfterCredit;
-                }
-
-                const effectiveRate = (finalTaxLiability / income) * 100;
-
-                // Update CA depreciation label based on method
-                const caDepreciationLabel = document.getElementById('caDepreciationLabel');
-                if (caDepreciationMethod === '6years') {
-                    caDepreciationLabel.textContent = 'Solar Depreciation (CA - Year 1 of 6 on Total Assets)';
-                } else {
-                    caDepreciationLabel.textContent = 'Solar Depreciation (CA - Same as Federal)';
-                }
-
-                // Display results - Following Excel structure
-                document.getElementById('displayIncome').textContent = formatCurrency(income);
-                document.getElementById('displayFederalDepreciation').textContent = formatCurrency(federalDepreciation);
-                document.getElementById('displayCADepreciation').textContent = formatCurrency(caDepreciation);
-
-                // Show Year 2 revenue info if Year 2 is selected
-                if (solarRevenueYear === "2") {
-                    const year2Revenue = solarInvestment * 1.5;
-                    const year2PossibleTax = year2Revenue * 0.20;
-                    const year2TaxAfterCredit = Math.max(0, year2PossibleTax - carryForward);
-
-                    document.getElementById('year2RevenueRow').style.display = '';
-                    document.getElementById('year2TaxRow').style.display = '';
-                    document.getElementById('displayYear2Revenue').textContent = formatCurrency(year2Revenue);
-                    document.getElementById('displayYear2Tax').textContent = formatCurrency(year2PossibleTax);
-
-                    // Show Year 2 minimum tax card
-                    document.getElementById('year2MinTaxCard').style.display = 'block';
-                    document.getElementById('displayYear2MinTax').textContent = formatCurrency(year2TaxAfterCredit);
-                } else {
-                    document.getElementById('year2RevenueRow').style.display = 'none';
-                    document.getElementById('year2TaxRow').style.display = 'none';
-                    document.getElementById('year2MinTaxCard').style.display = 'none';
-                }
-
-                document.getElementById('displayAGI').textContent = formatCurrency(reducedAGI);
-                document.getElementById('displayStandardDeduction').textContent = formatCurrency(maxDonationDeduction);
-                document.getElementById('displayDonation').textContent = formatCurrency(donation);
-                document.getElementById('displayFederalFinalAGI').textContent = formatCurrency(federalFinalAGI);
-                document.getElementById('displayCAFinalAGI').textContent = formatCurrency(caFinalAGI);
-
-                // Display tax totals
-                document.getElementById('displayFederalTax').textContent = formatCurrency(federalTax);
-                document.getElementById('displayFederalSolarCredit').textContent = formatCurrency(solarTaxCredit);
-                document.getElementById('displayFederalTaxAfterCredit').textContent = formatCurrency(federalTaxAfterCredit);
-
-                // Show carryforward if applicable
-                if (carryForward > 0) {
-                    document.getElementById('carryForwardRow').style.display = '';
-                    document.getElementById('displayCarryForward').textContent = formatCurrency(carryForward);
-                } else {
-                    document.getElementById('carryForwardRow').style.display = 'none';
-                }
-
-                document.getElementById('displayCATax').textContent = formatCurrency(caTax);
-                document.getElementById('displayTotalTax').textContent = formatCurrency(totalTax);
-
-                // Solar benefits
-                document.getElementById('displaySolarInvestment').textContent = formatCurrency(solarInvestment);
-                document.getElementById('displayMaintenance').textContent = formatCurrency(solarMaintenance);
-
-                // Final calculations
-                document.getElementById('displayFinalTax').textContent = formatCurrency(finalTaxLiability);
-                document.getElementById('displayTotalOutflow').textContent = formatCurrency(totalOutflow);
-                document.getElementById('displayTotalOutflowDisplay').textContent = formatCurrency(totalOutflow);
-                document.getElementById('displayEffectiveTax').textContent = formatCurrency(finalTaxLiability);
-                document.getElementById('displayEffectiveRate').textContent = effectiveRate.toFixed(2) + '%';
-
-                // Update comparison table
-                updateComparisonTable();
             }
 
             function updateComparisonTable() {
                 const filingStatus = document.getElementById('filingStatus').value;
                 const income = parseFloat(document.getElementById('income').value) || 0;
-                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+                const solarMarkup = parseFloat(document.getElementById('solarMarkup').value) || 0;
+                const incomeCredit = parseFloat(document.getElementById('incomeCredit').value) || 0;
+                const depreciationRecaptureYear = document.getElementById('depreciationRecaptureYear').value;
                 const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
                 const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
                 const caDepreciationMethod = document.getElementById('caDepreciationMethod').value;
 
                 const solarInvestments = [50000, 100000, 150000, 200000, 250000, 300000, 350000, 400000, 450000, 500000];
 
+                // Calculate total tax WITHOUT solar investment ONCE (baseline for comparison)
+                // No solar depreciation, no solar tax credit
+                // Donation deduction based on income (not reduced AGI since there's no depreciation)
+                const donationDeductionWithoutSolar = income * (donationPercent / 100);
+                const donationPaidWithoutSolar = donationDeductionWithoutSolar * 0.2;
+                const finalAGIWithoutSolar = income - donationDeductionWithoutSolar;
+                const federalTaxWithoutSolar = calculateProgressiveTax(finalAGIWithoutSolar, federalBrackets[filingStatus]).tax;
+                const caTaxWithoutSolar = calculateProgressiveTax(finalAGIWithoutSolar, caBrackets).tax;
+                const totalTaxWithoutSolar = federalTaxWithoutSolar + caTaxWithoutSolar + donationPaidWithoutSolar;
+
                 const rows = [
                     { label: 'Gross Income', key: 'income', highlight: false, isPercentage: false, textColor: 'default' },
                     { label: 'Solar Investment', key: 'solarInvestment', highlight: false, isPercentage: false, textColor: 'red' },
+                    { label: 'Solar Tax Credit', key: 'solarTaxCredit', highlight: false, isPercentage: false, textColor: 'green' },
+                    { label: 'Solar Depreciation', key: 'solarDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
                     { label: 'Solar Maintenance', key: 'solarMaintenance', highlight: false, isPercentage: false, textColor: 'red' },
                     { label: 'Solar Depreciation (Federal)', key: 'federalDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
                     { label: 'Solar Depreciation (CA - Method varies)', key: 'caDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
-                    { label: 'Revenue in Year 2', key: 'year2Revenue', highlight: false, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                    { label: 'Possible Least Tax (20%)', key: 'year2Tax', highlight: false, isPercentage: false, textColor: 'red', showOnlyYear2: true },
                     { label: 'Reduced AGI', key: 'reducedAGI', highlight: false, isPercentage: false, textColor: 'default' },
                     { label: `${donationPercent}% Max Donation Deduction`, key: 'maxDonationDeduction', highlight: false, isPercentage: false, textColor: 'default' },
                     { label: 'Donation Paid (20%)', key: 'donation', highlight: false, isPercentage: false, textColor: 'red' },
@@ -805,23 +846,36 @@
                     { label: 'Federal Credit Carry Forward', key: 'carryForward', highlight: false, isPercentage: false, textColor: 'green' },
                     { label: 'CA Tax', key: 'caTax', highlight: false, isPercentage: false, textColor: 'red' },
                     { label: 'Total Tax (Fed + CA)', key: 'totalTax', highlight: true, isPercentage: false, textColor: 'red' },
+                    { label: 'Total tax without solar investment including donation', key: 'totalTaxWithoutSolar', highlight: false, isPercentage: false, textColor: 'red' },
                     { label: 'Total Outflow', key: 'totalOutflow', highlight: true, isPercentage: false, textColor: 'default' },
                     { label: 'Effective Tax Rate', key: 'effectiveRate', highlight: true, isPercentage: true, textColor: 'default' },
-                    { label: 'Total Tax (Year 1 + Year 2)', key: 'totalTaxBothYears', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                    { label: 'Total Tax (Year 1 + Year 2) - After Carry Forward', key: 'totalTaxAfterCarryForward', highlight: true, isPercentage: false, textColor: 'red', showOnlyYear2: true },
-                    { label: 'Effective Tax Rate - after Carry Forward', key: 'effectiveRateAfterCarryForward', highlight: true, isPercentage: true, textColor: 'default', showOnlyYear2: true }
+                    { label: 'Total Tax saving due to Solar($)', key: 'totalTaxSaving', highlight: true, isPercentage: false, textColor: 'green' },
+                    { label: `Depreciation Recapture (Year ${depreciationRecaptureYear})`, key: 'depreciationRecapture', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: 'Depreciation Recapture Tax (24%)', key: 'depreciationRecaptureTax', highlight: false, isPercentage: false, textColor: 'red' }
                 ];
 
                 const tableData = solarInvestments.map(solarInv => {
                     const solarMaintenance = solarInv * (maintenanceRate / 100);
 
-                    // Calculate Federal depreciation based on revenue year selection
-                    let federalDepreciation;
-                    if (solarRevenueYear === "1") {
-                        federalDepreciation = (solarInv * 2) - (solarInv * 1.5);  // 0.5x
-                    } else {
-                        federalDepreciation = solarInv * 2;  // 2x
-                    }
+                    // Calculate Solar Tax Credit = Solar Investment / (1 + Solar company Mark-up (%))
+                    // Guard against division by zero - ensure denominator is never 0
+                    const markupDenominator = 1 + (solarMarkup / 100);
+                    const solarTaxCredit = markupDenominator > 0 ? solarInv / markupDenominator : solarInv;
+
+                    // Calculate Solar Depreciation = Solar Tax Credit / Income credit(%)
+                    // Guard against division by zero - use 50% as default if incomeCredit is 0 or invalid
+                    const effectiveIncomeCredit = incomeCredit > 0 ? incomeCredit : 50;
+                    const incomeCreditDecimal = effectiveIncomeCredit / 100;
+                    const solarDepreciation = solarTaxCredit / incomeCreditDecimal;
+
+                    // Calculate Federal depreciation - use full depreciation
+                    const federalDepreciation = solarDepreciation;
+
+                    // Calculate Depreciation Recapture = total depreciation - solar investment
+                    const depreciationRecapture = Math.max(0, solarDepreciation - solarInv);
+
+                    // Depreciation Recapture tax = Depreciation Recapture * 24%
+                    const depreciationRecaptureTax = depreciationRecapture * 0.24;
 
                     // CA Depreciation: Based on user selection
                     let caDepreciation;
@@ -847,9 +901,7 @@
                     const caResult = calculateProgressiveTax(caFinalAGI, caBrackets);
                     const caTax = caResult.tax;
 
-                    // Solar tax credit applies to Federal only
-                    const solarTaxCredit = solarInv;
-
+                    // Solar tax credit is already calculated above: Solar Investment / (1 + Mark-up %)
                     // Calculate Federal tax after credit
                     let federalTaxAfterCredit = federalTax - solarTaxCredit;
                     let carryForward = 0;
@@ -864,34 +916,22 @@
                     const totalTax = federalTaxAfterCredit + caTax;
                     const totalOutflow = donation + solarInv + totalTax + solarMaintenance;
                     const finalTaxLiability = totalOutflow;
-                    const effectiveRate = (finalTaxLiability / income) * 100;
+                    const effectiveRate = income > 0 ? (finalTaxLiability / income) * 100 : 0;
 
-                    // Year 2 revenue calculations
-                    const year2Revenue = solarInv * 1.5;
-                    const year2Tax = year2Revenue * 0.20;
-
-                    // Year 2 tax after credit: Apply any carry forward credit to Year 2 tax
-                    const year2TaxAfterCredit = Math.max(0, year2Tax - carryForward);
-
-                    // Total Tax (Year 1 + Year 2) = Total Outflow (Year 1) + Possible Least Tax (20%) (Year 2)
-                    const totalTaxBothYears = totalOutflow + year2Tax;
-
-                    // Total tax after carry forward: Subtract carry forward credit from total tax
-                    const totalTaxAfterCarryForward = Math.max(0, totalTaxBothYears - carryForward);
-
-                    // Effective tax rate after carry forward: Total tax after carry forward as % of income
-                    const effectiveRateAfterCarryForward = (totalTaxAfterCarryForward / income) * 100;
+                    // Total Tax saving due to Solar = Total tax without solar (calculated once above) - Total Outflow + Federal Credit Carry Forward
+                    // This compares the baseline tax liability to the total cost with solar, plus any carry forward credit
+                    const totalTaxSaving = totalTaxWithoutSolar - totalOutflow + carryForward;
 
                     return {
                         income: income,
                         solarInvestment: solarInv,
+                        solarTaxCredit: solarTaxCredit,
+                        solarDepreciation: solarDepreciation,
                         solarMaintenance: solarMaintenance,
                         federalDepreciation: federalDepreciation,
                         caDepreciation: caDepreciation,
-                        year2Revenue: year2Revenue,
-                        year2Tax: year2Tax,
-                        totalTaxAfterCarryForward: totalTaxAfterCarryForward,
-                        effectiveRateAfterCarryForward: effectiveRateAfterCarryForward,
+                        depreciationRecapture: depreciationRecapture,
+                        depreciationRecaptureTax: depreciationRecaptureTax,
                         reducedAGI: reducedAGI,
                         maxDonationDeduction: maxDonationDeduction,
                         donation: donation,
@@ -903,19 +943,16 @@
                         carryForward: carryForward,
                         caTax: caTax,
                         totalTax: totalTax,
+                        totalTaxWithoutSolar: totalTaxWithoutSolar,
                         totalOutflow: totalOutflow,
                         finalTaxLiability: finalTaxLiability,
-                        totalTaxBothYears: totalTaxBothYears,
-                        effectiveRate: effectiveRate
+                        effectiveRate: effectiveRate,
+                        totalTaxSaving: totalTaxSaving
                     };
                 });
 
                 let tableHTML = '';
                 rows.forEach(row => {
-                    // Skip Year 2 rows if Year 1 is selected
-                    if (row.showOnlyYear2 && solarRevenueYear === "1") {
-                        return;
-                    }
 
                     // Determine background color (only yellow for highlights, otherwise white)
                     const bgColor = row.highlight ? '#fff3cd' : 'white';
@@ -935,7 +972,12 @@
 
                     tableData.forEach(data => {
                         const value = data[row.key];
-                        const displayValue = row.isPercentage ? value.toFixed(2) + '%' : formatCurrency(value);
+                        let displayValue;
+                        if (value === undefined || value === null || isNaN(value)) {
+                            displayValue = row.isPercentage ? '0.00%' : '$0';
+                        } else {
+                            displayValue = row.isPercentage ? value.toFixed(2) + '%' : formatCurrency(value);
+                        }
                         tableHTML += `<td style="padding: 12px; text-align: center; background: ${bgColor}; font-weight: ${fontWeight}; color: ${textColor}; border-right: 1px solid #eee;">${displayValue}</td>`;
                     });
 
@@ -949,7 +991,7 @@
             function downloadPDF() {
                 const income = parseFloat(document.getElementById('income').value) || 0;
                 const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;
-                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+                const depreciationRecaptureYear = document.getElementById('depreciationRecaptureYear').value;
                 const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
                 const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
                 const caDepreciationMethod = document.getElementById('caDepreciationMethod').value;
@@ -985,7 +1027,7 @@
                         <div class="param-row"><strong>Filing Status:</strong> <span>${filingStatus === 'married' ? 'Married Filing Jointly' : filingStatus === 'single' ? 'Single' : 'Head of Household'}</span></div>
                         <div class="param-row"><strong>Annual Gross Income:</strong> <span>${formatCurrency(income)}</span></div>
                         <div class="param-row"><strong>Solar Investment Amount:</strong> <span>${formatCurrency(solarInvestment)}</span></div>
-                        <div class="param-row"><strong>Solar Revenue Counted in Year:</strong> <span>Year ${solarRevenueYear}</span></div>
+                        <div class="param-row"><strong>Depreciation Recapture:</strong> <span>Year ${depreciationRecaptureYear}</span></div>
                         <div class="param-row"><strong>Solar Maintenance Rate:</strong> <span>${maintenanceRate}%</span></div>
                         <div class="param-row"><strong>Max Donation Deduction (% of AGI):</strong> <span>${donationPercent}%</span></div>
                         <div class="param-row"><strong>CA Depreciation Method:</strong> <span>${caDepreciationMethod === '6years' ? '6 years on total assets' : 'Same as Federal'}</span></div>
@@ -1012,7 +1054,7 @@
             function downloadExcel() {
                 const income = parseFloat(document.getElementById('income').value) || 0;
                 const solarInvestment = parseFloat(document.getElementById('solarInvestment').value) || 0;
-                const solarRevenueYear = document.getElementById('solarRevenueYear').value;
+                const depreciationRecaptureYear = document.getElementById('depreciationRecaptureYear').value;
                 const maintenanceRate = parseFloat(document.getElementById('maintenanceRate').value) || 0;
                 const donationPercent = parseFloat(document.getElementById('donationPercent').value) || 0;
                 const caDepreciationMethod = document.getElementById('caDepreciationMethod').value;
@@ -1024,7 +1066,7 @@
                 csv += `Filing Status,${filingStatus === 'married' ? 'Married Filing Jointly' : filingStatus === 'single' ? 'Single' : 'Head of Household'}\n`;
                 csv += `Annual Gross Income,${income}\n`;
                 csv += `Solar Investment Amount,${solarInvestment}\n`;
-                csv += `Solar Revenue Counted in Year,Year ${solarRevenueYear}\n`;
+                csv += `Depreciation Recapture,Year ${depreciationRecaptureYear}\n`;
                 csv += `Solar Maintenance Rate,${maintenanceRate}%\n`;
                 csv += `Max Donation Deduction (% of AGI),${donationPercent}%\n`;
                 csv += `CA Depreciation Method,${caDepreciationMethod === '6years' ? '6 years on total assets' : 'Same as Federal'}\n`;
@@ -1059,16 +1101,16 @@
                 document.body.removeChild(link);
             }
 
-            // Calculate on page load
+            // Calculate on page load and set up event listeners
             window.onload = function () {
+                // Set up event listeners first
+                document.querySelectorAll('input, select').forEach(element => {
+                    element.addEventListener('input', calculateTax);
+                    element.addEventListener('change', calculateTax);
+                });
+                // Then calculate
                 calculateTax();
             };
-
-            // Recalculate on any input change
-            document.querySelectorAll('input, select').forEach(element => {
-                element.addEventListener('input', calculateTax);
-                element.addEventListener('change', calculateTax);
-            });
         </script>
     </body>
 
