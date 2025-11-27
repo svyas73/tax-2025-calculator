@@ -663,11 +663,11 @@
                     const markupDenominator = 1 + (solarMarkup / 100);
                     const solarTaxCredit = markupDenominator > 0 ? solarInvestment / markupDenominator : solarInvestment;
 
-                    // Calculate Solar Depreciation = Solar Tax Credit / Income credit(%)
+                    // Calculate Solar Depreciation = Solar Tax Credit / Income credit(%) - 50% of tax credit
                     // Guard against division by zero - use 50% as default if incomeCredit is 0 or invalid
                     const effectiveIncomeCredit = incomeCredit > 0 ? incomeCredit : 50;
                     const incomeCreditDecimal = effectiveIncomeCredit / 100;
-                    const solarDepreciation = solarTaxCredit / incomeCreditDecimal;
+                    const solarDepreciation = Math.max(0, (solarTaxCredit / incomeCreditDecimal) - (solarTaxCredit * 0.5));
 
                     // B4: Solar Maintenance = B3 * 0.1
                     const solarMaintenance = solarInvestment * (maintenanceRate / 100);
@@ -861,11 +861,11 @@
                     const markupDenominator = 1 + (solarMarkup / 100);
                     const solarTaxCredit = markupDenominator > 0 ? solarInv / markupDenominator : solarInv;
 
-                    // Calculate Solar Depreciation = Solar Tax Credit / Income credit(%)
+                    // Calculate Solar Depreciation = Solar Tax Credit / Income credit(%) - 50% of tax credit
                     // Guard against division by zero - use 50% as default if incomeCredit is 0 or invalid
                     const effectiveIncomeCredit = incomeCredit > 0 ? incomeCredit : 50;
                     const incomeCreditDecimal = effectiveIncomeCredit / 100;
-                    const solarDepreciation = solarTaxCredit / incomeCreditDecimal;
+                    const solarDepreciation = Math.max(0, (solarTaxCredit / incomeCreditDecimal) - (solarTaxCredit * 0.5));
 
                     // Calculate Federal depreciation - use full depreciation
                     const federalDepreciation = solarDepreciation;
