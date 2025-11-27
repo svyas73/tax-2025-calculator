@@ -727,9 +727,9 @@
                     // Final tax liability equals total outflow (credit already applied)
                     const finalTaxLiability = totalOutflow;
 
-                    // Calculate Depreciation Recapture = total depreciation - solar investment
-                    // Total depreciation is the solarDepreciation value
-                    const depreciationRecapture = Math.max(0, solarDepreciation - solarInvestment);
+                    // Calculate Depreciation Recapture = (total depreciation + 50% of tax credit) - solar investment
+                    // Total depreciation is the solarDepreciation value, plus 50% of tax credit
+                    const depreciationRecapture = Math.max(0, (solarDepreciation + (solarTaxCredit * 0.5)) - solarInvestment);
 
                     // Depreciation Recapture tax = Depreciation Recapture * 24%
                     const depreciationRecaptureTax = depreciationRecapture * 0.24;
@@ -870,8 +870,8 @@
                     // Calculate Federal depreciation - use full depreciation
                     const federalDepreciation = solarDepreciation;
 
-                    // Calculate Depreciation Recapture = total depreciation - solar investment
-                    const depreciationRecapture = Math.max(0, solarDepreciation - solarInv);
+                    // Calculate Depreciation Recapture = (total depreciation + 50% of tax credit) - solar investment
+                    const depreciationRecapture = Math.max(0, (solarDepreciation + (solarTaxCredit * 0.5)) - solarInv);
 
                     // Depreciation Recapture tax = Depreciation Recapture * 24%
                     const depreciationRecaptureTax = depreciationRecapture * 0.24;
