@@ -271,9 +271,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Annual Gross Income</label>
+                        <label>Annual Taxable Income</label>
                         <input type="number" id="income" value="1000000" min="0" step="1000">
-                        <div class="info-text">Total annual income before any deductions</div>
+                        <div class="info-text">Total annual Taxable income after any standard deduction, 401K etc</div>
                     </div>
 
                     <div class="form-group">
@@ -827,7 +827,7 @@
                 const totalTaxWithoutSolar = federalTaxWithoutSolar + caTaxWithoutSolar + donationPaidWithoutSolar;
 
                 const rows = [
-                    { label: 'Gross Income', key: 'income', highlight: false, isPercentage: false, textColor: 'default' },
+                    { label: 'Taxable Income', key: 'income', highlight: false, isPercentage: false, textColor: 'default' },
                     { label: 'Solar Investment', key: 'solarInvestment', highlight: false, isPercentage: false, textColor: 'red' },
                     { label: 'Solar Tax Credit', key: 'solarTaxCredit', highlight: false, isPercentage: false, textColor: 'green' },
                     { label: 'Solar Depreciation', key: 'solarDepreciation', highlight: false, isPercentage: false, textColor: 'default' },
@@ -1023,7 +1023,7 @@
                     <div class="params">
                         <h3>📋 Input Parameters</h3>
                         <div class="param-row"><strong>Filing Status:</strong> <span>${filingStatus === 'married' ? 'Married Filing Jointly' : filingStatus === 'single' ? 'Single' : 'Head of Household'}</span></div>
-                        <div class="param-row"><strong>Annual Gross Income:</strong> <span>${formatCurrency(income)}</span></div>
+                        <div class="param-row"><strong>Annual Taxable Income:</strong> <span>${formatCurrency(income)}</span></div>
                         <div class="param-row"><strong>Solar Investment Amount:</strong> <span>${formatCurrency(solarInvestment)}</span></div>
                         <div class="param-row"><strong>Depreciation Recapture:</strong> <span>Year ${depreciationRecaptureYear}</span></div>
                         <div class="param-row"><strong>Solar Maintenance Rate:</strong> <span>${maintenanceRate}%</span></div>
@@ -1062,7 +1062,7 @@
                 let csv = 'Tax Planning Calculator 2025 - Solar Investment & Donation Strategy\n\n';
                 csv += 'INPUT PARAMETERS\n';
                 csv += `Filing Status,${filingStatus === 'married' ? 'Married Filing Jointly' : filingStatus === 'single' ? 'Single' : 'Head of Household'}\n`;
-                csv += `Annual Gross Income,${income}\n`;
+                csv += `Annual Taxable Income,${income}\n`;
                 csv += `Solar Investment Amount,${solarInvestment}\n`;
                 csv += `Depreciation Recapture,Year ${depreciationRecaptureYear}\n`;
                 csv += `Solar Maintenance Rate,${maintenanceRate}%\n`;
